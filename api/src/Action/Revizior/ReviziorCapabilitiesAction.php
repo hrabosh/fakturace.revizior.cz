@@ -25,7 +25,8 @@ final class ReviziorCapabilitiesAction
                 'userProvisioning' => true,
                 // Sdílený ClientWriter + revizior_client_links (R3, slice 1).
                 'clientUpsert' => true,
-                'priceResolution' => false,
+                // Ceny z ceníku dodavatele včetně zákaznických výjimek (R3, slice 2).
+                'priceResolution' => true,
                 // Sdílený InvoiceDraftCreator + revizior_invoice_links (R3, slice 3).
                 'invoiceDraft' => true,
                 // R6: streamovaný upload PDF s digestem a idempotencí.

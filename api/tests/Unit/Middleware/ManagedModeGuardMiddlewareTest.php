@@ -37,15 +37,21 @@ final class ManagedModeGuardMiddlewareTest extends TestCase
         yield 'forgot password' => ['/api/auth/forgot', 'managed_local_auth_disabled'];
         yield 'self update' => ['/api/admin/update/trigger', 'managed_self_update_disabled'];
         yield 'MyUcto upgrade' => ['/api/admin/myucto-upgrade/status', 'managed_myucto_upgrade_disabled'];
-        yield 'purchase invoices' => ['/api/purchase-invoices', 'managed_module_disabled'];
-        yield 'purchase dashboard' => ['/api/dashboard/purchase-summary', 'managed_module_disabled'];
-        yield 'tax reports' => ['/api/reports/dph', 'managed_module_disabled'];
-        yield 'logbook' => ['/api/logbook/trips', 'managed_module_disabled'];
+        // Přijaté faktury, daně a kniha jízd jsou od 2026-09-07 v managed režimu
+        // zapnuté — technik je vede vedle vystavených faktur.
     }
 
     public function testManagedModeAllowsStatusAndEnabledModules(): void
     {
-        foreach (['/api/auth/setup-status', '/api/invoices', '/api/documents'] as $path) {
+        foreach ([
+            '/api/auth/setup-status',
+            '/api/invoices',
+            '/api/documents',
+            '/api/purchase-invoices',
+            '/api/dashboard/purchase-summary',
+            '/api/reports/dph',
+            '/api/logbook/trips',
+        ] as $path) {
             self::assertSame(
                 204,
                 $this->managed()->process($this->request($path), $this->okHandler())->getStatusCode(),

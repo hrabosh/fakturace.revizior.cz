@@ -102,6 +102,8 @@ export const priceListApi = {
     } }).then(r => r.data),
   get: (id: number) => api.get<PriceListItem>(`/price-list-items/${id}`).then(r => r.data),
   create: (payload: PriceListPayload) => api.post<PriceListItem>('/price-list-items', payload).then(r => r.data),
+  seedDefaults: () =>
+    api.post<{ created: number; skipped: number; skipped_codes: string[] }>('/price-list-items/defaults').then(r => r.data),
   update: (id: number, payload: PriceListPayload) => api.put<PriceListItem>(`/price-list-items/${id}`, payload).then(r => r.data),
   delete: (id: number) => api.delete<{ deleted: boolean; archived: boolean }>(`/price-list-items/${id}`).then(r => r.data),
   resolve: (id: number, params: { client_id?: number; currency_id: number; rate_date: string; prices_include_vat: boolean }) =>

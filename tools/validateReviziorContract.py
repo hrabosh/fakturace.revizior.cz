@@ -31,6 +31,7 @@ EXPECTED_FIXTURES = {
     "user-upsert.json",
     "client-upsert-request.json",
     "client-upsert-response.json",
+    "price-list-response.json",
     "price-resolve-request.json",
     "price-resolve-response.json",
     "invoice-draft-request.json",

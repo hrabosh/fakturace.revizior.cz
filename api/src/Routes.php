@@ -183,8 +183,10 @@ use MyInvoice\Action\Revizior\SyncReviziorUserAction;
 use MyInvoice\Action\Revizior\SyncReviziorClientAction;
 use MyInvoice\Action\Revizior\CreateReviziorInvoiceDraftAction;
 use MyInvoice\Action\Revizior\GetReviziorInvoiceAction;
+use MyInvoice\Action\Revizior\GetReviziorPriceListAction;
 use MyInvoice\Action\Revizior\ReviziorSsoAction;
 use MyInvoice\Action\Revizior\PutReviziorInvoiceAttachmentAction;
+use MyInvoice\Action\Revizior\ResolveReviziorPricesAction;
 use MyInvoice\Action\Admin\MyuctoUpgradeAction;
 use MyInvoice\Action\Admin\UpdateAction;
 use Slim\App;
@@ -215,6 +217,14 @@ final class Routes
         $app->put(
             '/api/integrations/revizior/v1/organizations/{organizationUuid}/clients/{clientUuid}',
             SyncReviziorClientAction::class,
+        );
+        $app->get(
+            '/api/integrations/revizior/v1/organizations/{organizationUuid}/price-list',
+            GetReviziorPriceListAction::class,
+        );
+        $app->post(
+            '/api/integrations/revizior/v1/organizations/{organizationUuid}/prices/resolve',
+            ResolveReviziorPricesAction::class,
         );
         $app->post(
             '/api/integrations/revizior/v1/organizations/{organizationUuid}/invoice-drafts',
@@ -332,6 +342,7 @@ final class Routes
         // Ceníkové položky (interní session API; správa admin, čtení accountant)
         $app->get   ('/api/price-list-items', [PriceListItemAction::class, 'list']);
         $app->post  ('/api/price-list-items', [PriceListItemAction::class, 'create']);
+        $app->post  ('/api/price-list-items/defaults', [PriceListItemAction::class, 'seedDefaults']);
         $app->get   ('/api/price-list-items/{id:[0-9]+}', [PriceListItemAction::class, 'get']);
         $app->put   ('/api/price-list-items/{id:[0-9]+}', [PriceListItemAction::class, 'update']);
         $app->delete('/api/price-list-items/{id:[0-9]+}', [PriceListItemAction::class, 'delete']);

@@ -6,10 +6,12 @@ import { priceListApi, type PriceListItem } from '@/api/priceList'
 import { apiErrorMessage } from '@/api/errors'
 import { useToast } from '@/composables/useToast'
 import { codebooksApi, type Currency } from '@/api/codebooks'
+import { useAuthStore } from '@/stores/auth'
 
 const { t } = useI18n()
 const router = useRouter()
 const toast = useToast()
+const auth = useAuthStore()
 
 const items = ref<PriceListItem[]>([])
 const loading = ref(false)
@@ -18,6 +20,21 @@ const query = ref('')
 const currency = ref('')
 const status = ref<'active' | 'archived' | 'all'>('active')
 const currencies = ref<Currency[]>([])
+const seeding = ref(false)
+
+async function seedDefaults() {
+  if (!window.confirm(t('price_list.seed_defaults_confirm'))) return
+  seeding.value = true
+  try {
+    const result = await priceListApi.seedDefaults()
+    toast.success(t('price_list.seed_defaults_done', { created: result.created, skipped: result.skipped }))
+    await load()
+  } catch (e) {
+    toast.error(apiErrorMessage(e))
+  } finally {
+    seeding.value = false
+  }
+}
 
 async function load() {
   loading.value = true
@@ -75,9 +92,18 @@ onMounted(async () => {
         <h1 class="text-2xl font-semibold">{{ t('price_list.title') }}</h1>
         <p class="mt-1 text-sm text-neutral-500">{{ t('price_list.subtitle') }}</p>
       </div>
-      <button type="button" class="cursor-pointer inline-flex items-center justify-center h-9 px-3 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium rounded-md" @click="createItem">
-        {{ t('price_list.new') }}
-      </button>
+      <div class="flex flex-wrap items-center gap-2">
+        <!-- Startovací sada úkonů revizního technika. Existující kódy přeskočí,
+             takže se dá pustit i do rozpracovaného ceníku. -->
+        <button v-if="auth.isManaged" type="button" :disabled="seeding"
+                class="cursor-pointer inline-flex items-center justify-center h-9 px-3 border border-neutral-300 hover:bg-neutral-100 text-sm font-medium rounded-md disabled:opacity-50"
+                @click="seedDefaults">
+          {{ t('price_list.seed_defaults') }}
+        </button>
+        <button type="button" class="cursor-pointer inline-flex items-center justify-center h-9 px-3 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium rounded-md" @click="createItem">
+          {{ t('price_list.new') }}
+        </button>
+      </div>
     </header>
 
     <div v-if="error" class="mb-4 rounded-md border border-danger-300 bg-danger-50 px-4 py-3 text-sm text-danger-700">

@@ -962,7 +962,10 @@
       "catalog_explicit": "Cena ceníku",
       "customer_base_converted": "Cena zákazníka přepočtená kurzem",
       "catalog_base_converted": "Cena ceníku přepočtená kurzem"
-    }
+    },
+    "seed_defaults": "Nahrát výchozí ceník",
+    "seed_defaults_confirm": "Nahrát startovací ceník revizních úkonů? Položky, které už v ceníku máte, se nepřepíšou — ceny jsou orientační a upravíte je podle sebe.",
+    "seed_defaults_done": "Ceník doplněn: {created} nových položek, {skipped} už existovalo."
   },
   "recurring": {
     "title": "Pravidelné fakturace",

@@ -28,7 +28,7 @@ const slice = computed(() => {
     if (v > 0) {
       labelArr.push(k === 'active' ? t('common.active') : k === 'paused' ? t('project.status_paused') : t('project.status_closed'))
       valueArr.push(v)
-      colorArr.push(palette[k] || '#8AA9CC')
+      colorArr.push(palette[k] || '#93A9DC')
     }
   }
   return { labelArr, valueArr, colorArr }

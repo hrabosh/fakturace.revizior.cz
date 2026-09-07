@@ -99,3 +99,33 @@ provider to správně nebrání (jiný `externalInvoiceKey`), consumer zatím je
 ~~R4 SSO~~ — hotovo, viz [`r4-browser-sso.md`](r4-browser-sso.md); uživatel se
 z ReviziORu dostane rovnou do editoru konceptu. Potom R5 outbox
 (`event_sequence` už na linku je).
+
+## Ceny z ceníku (od 2026-09-07)
+
+`priceResolution` je zapnutá. ReviziOR pošle na
+`POST /organizations/{uuid}/prices/resolve` ceníkové **kódy** a množství,
+poskytovatel vrátí ceny včetně zákaznických výjimek a sazby DPH.
+
+Dvě rozhodnutí, která se špatně odvozují z kódu:
+
+- **Chyba je per položka, ne per požadavek.** Nedohledatelná nebo archivovaná
+  položka se vrátí bez ceny s `error`; ostatní řádky se ocení. Jedna špatná
+  položka nesmí shodit celý podklad — technik cenu doplní ručně.
+- **Výpočet se nedubluje.** Cenu i převod měny řeší `PriceListItemResolver`,
+  tentýž kód jako ruční vystavení dokladu v UI.
+
+Vedle toho existuje `GET /organizations/{uuid}/price-list`: vrací **kódy a názvy
+bez cen**, aby ReviziOR mohl ve fakturačních pravidlech nabídnout výběr místo
+ručního opisování kódu. Ceny tam schválně nejsou — závisí na klientovi, měně
+a datu, takže mimo ten kontext by ukazovaly něco jiného, než co spočítá
+`prices/resolve`. Oba endpointy jedou pod scope `price:read`.
+
+## Startovací ceník
+
+Prázdný ceník znamená ruční vyplňování cen u každého řádku. `POST
+/api/price-list-items/defaults` (jen managed režim, oprávnění na správu ceníku)
+založí sadu běžných úkonů revizního technika; v UI je pod tlačítkem „Nahrát
+výchozí ceník". Existující kódy přeskočí, takže se dá pustit i do rozpracovaného
+ceníku. **Ceny jsou orientační výchozí body k přepsání**, ne doporučení trhu —
+nula tam schválně není, doklad s nulovou cenou je horší než doklad, který se
+kvůli chybějící ceně nevystaví.

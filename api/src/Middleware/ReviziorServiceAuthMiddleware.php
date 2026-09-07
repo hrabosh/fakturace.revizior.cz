@@ -137,6 +137,20 @@ final class ReviziorServiceAuthMiddleware implements MiddlewareInterface
             return;
         }
 
+        $priceListPattern = '#^' . preg_quote(self::PATH_PREFIX, '#') . '/organizations/([^/]+)/price-list$#D';
+        if ($request->getMethod() === 'GET' && preg_match($priceListPattern, $path, $matches) === 1) {
+            $this->authorizeOrganizationRequest($identity, 'price:read', (string) $matches[1]);
+            return;
+        }
+
+        $pricePattern = '#^' . preg_quote(self::PATH_PREFIX, '#') . '/organizations/([^/]+)/prices/resolve$#D';
+        if ($request->getMethod() === 'POST' && preg_match($pricePattern, $path, $matches) === 1) {
+            // Čtení ceníku má vlastní scope: token na vystavení dokladu nesmí
+            // stačit na výpis cen včetně zákaznických výjimek.
+            $this->authorizeOrganizationRequest($identity, 'price:read', (string) $matches[1]);
+            return;
+        }
+
         $draftPattern = '#^' . preg_quote(self::PATH_PREFIX, '#') . '/organizations/([^/]+)/invoice-drafts$#D';
         if ($request->getMethod() === 'POST' && preg_match($draftPattern, $path, $matches) === 1) {
             $this->authorizeOrganizationRequest($identity, 'invoice:write', (string) $matches[1]);
