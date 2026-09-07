@@ -98,3 +98,33 @@ consumer události zpracoval frontou (`messenger:consume`).
 
 ~~R6 přílohy~~ — hotovo, viz [`r6-attachments.md`](r6-attachments.md). Zbývá
 dokončení managed UI (`/settings/supplier`, odkaz na revizi) a R7 hardening.
+
+## Událost o organizaci: `organization.onboarding_changed`
+
+Outbox neveze jen doklady. Když se u tenanta změní stav fakturačního
+onboardingu, jde do ReviziORu událost s agregátem `organization`:
+
+```json
+{ "aggregate": { "type": "organization", "id": "<supplier_id>",
+                 "externalKey": "<organization_uuid>", "sequence": 1 },
+  "data": { "status": "active", "onboardingState": "completed" } }
+```
+
+Sekvenci drží `revizior_organization_links.event_sequence` — vlastní čítač,
+nezávislý na sekvencích dokladů. Bez něj by ReviziOR nepoznal pořadí a starší
+stav by mohl přepsat novější.
+
+**Proč událost, a ne čtení stavu.** `PUT /organizations/{uuid}` je zápis:
+přepíše fakturační identitu dodavatele daty z ReviziORu. Volat ho jen proto,
+abychom se dozvěděli stav, by smazalo, co uživatel doplnil ve fakturaci.
+
+**Co je „dokončeno"**: název, adresa a — u plátce DPH — DIČ. Číselná řada mezi
+podmínky nepatří: `invoice_number_format` je NULL-able a NULL znamená „použij
+formát instalace", ne „chybí". Neplátce DPH je platná volba, ne nedokončený stav.
+
+**Stav se přepočítává po uložení nastavení dodavatele.** Do 2026-09-05 se
+`onboarding_state` zapsalo při provisioningu jako `incomplete` a **nikdy se
+nezměnilo** — uživatel doplnil identitu a ReviziOR mu dál tvrdil, že nastavení
+chybí, takže nešlo vystavit doklad. Provisioning sám stav nepočítá schválně:
+dodavatel v tu chvíli teprve vzniká a jeho identita se stejně dokončuje až
+v tenantovém nastavení.

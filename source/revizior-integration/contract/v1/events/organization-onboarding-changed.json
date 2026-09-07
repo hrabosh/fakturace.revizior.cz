@@ -1,0 +1,18 @@
+{
+  "specVersion": "1.0",
+  "eventId": "80000000-0000-4000-8000-000000000002",
+  "eventType": "organization.onboarding_changed",
+  "occurredAt": "2026-09-05T09:02:11Z",
+  "organizationId": "30000000-0000-4000-8000-000000000001",
+  "supplierId": "123",
+  "aggregate": {
+    "type": "organization",
+    "id": "123",
+    "externalKey": "30000000-0000-4000-8000-000000000001",
+    "sequence": 1
+  },
+  "data": {
+    "status": "active",
+    "onboardingState": "completed"
+  }
+}

@@ -37,6 +37,7 @@ EXPECTED_FIXTURES = {
     "invoice-snapshot.json",
     "errors/validation-failed.json",
     "events/invoice-issued.json",
+    "events/organization-onboarding-changed.json",
 }
 
 UUID_PATTERN = re.compile(
