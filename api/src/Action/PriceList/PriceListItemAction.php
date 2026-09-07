@@ -26,6 +26,8 @@ final class PriceListItemAction
         private readonly ActivityLogger $logger,
         private readonly IpMatcher $ipMatcher,
         private readonly PermissionPolicy $permissions,
+        private readonly \MyInvoice\Service\Deployment\DeploymentCapabilities $deployment,
+        private readonly \MyInvoice\Service\PriceList\RevisionDefaultPriceList $defaults,
     ) {}
 
     public function list(Request $request, Response $response): Response
@@ -135,6 +137,38 @@ final class PriceListItemAction
         if ($item === null) return Json::error($response, 'not_found', 'Ceníková položka nebyla nalezena.', 404);
         $item['customer_overrides'] = $this->repo->customerOverrides($supplierId, (int) $item['id']);
         return Json::ok($response, $item);
+    }
+
+    /**
+     * Nahraje startovací ceník revizního technika.
+     *
+     * Jen v managed režimu: v obecné instalaci by sada revizních úkonů byla
+     * cizí obsah. Opakované spuštění existující kódy přeskočí, takže se dá
+     * pustit znovu po ručním úklidu.
+     */
+    public function seedDefaults(Request $request, Response $response): Response
+    {
+        if (!$this->deployment->isReviziorManaged()) {
+            return Json::error($response, 'not_available', 'Startovací ceník je dostupný jen ve fakturaci reviziOR.', 404);
+        }
+        if (!$this->canManage($request)) return $this->manageOnly($response);
+        $supplierId = SupplierGuard::currentId($request);
+
+        try {
+            $result = $this->defaults->seed($supplierId);
+        } catch (\DomainException $e) {
+            return Json::error($response, 'validation_failed', $e->getMessage(), 400);
+        }
+
+        foreach ($result['created'] as $code) {
+            $this->log($request, 'price_list_item.created', 0, ['code' => $code, 'source' => 'defaults']);
+        }
+
+        return Json::ok($response, [
+            'created' => count($result['created']),
+            'skipped' => count($result['skipped']),
+            'skipped_codes' => $result['skipped'],
+        ]);
     }
 
     public function create(Request $request, Response $response): Response

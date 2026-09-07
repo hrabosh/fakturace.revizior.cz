@@ -962,7 +962,10 @@
       "catalog_explicit": "Price list price",
       "customer_base_converted": "Converted customer price",
       "catalog_base_converted": "Converted price list price"
-    }
+    },
+    "seed_defaults": "Load starter price list",
+    "seed_defaults_confirm": "Load the starter price list for inspection work? Items you already have stay untouched — prices are a starting point you can adjust.",
+    "seed_defaults_done": "Price list updated: {created} new items, {skipped} already existed."
   },
   "recurring": {
     "title": "Recurring invoices",

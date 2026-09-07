@@ -45,9 +45,15 @@ final class DeploymentCapabilitiesTest extends TestCase
         self::assertSame('https://app.revizior.cz/fakturace', $payload['returnUrl']);
         self::assertTrue($payload['modules']['salesInvoices']);
         self::assertTrue($payload['modules']['documents']);
-        self::assertFalse($payload['modules']['purchaseInvoices']);
-        self::assertFalse($payload['modules']['tax']);
+        // Agenda technika vedle vystavených faktur.
+        self::assertTrue($payload['modules']['purchaseInvoices']);
+        self::assertTrue($payload['modules']['tax']);
+        self::assertTrue($payload['modules']['payroll']);
+        self::assertTrue($payload['modules']['logbook']);
+        // Aktualizaci instalace řídí nasazení z CI, ne tenant; upgrade na cizí
+        // produkt do managed režimu nepatří.
         self::assertFalse($payload['modules']['selfUpdate']);
+        self::assertFalse($payload['modules']['myuctoUpgrade']);
     }
 
     public function testUnknownModeFailsClosed(): void

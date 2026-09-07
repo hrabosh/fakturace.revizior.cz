@@ -11,6 +11,7 @@
     "invoice-draft-request.json": "sha256:dd5a51607857c27411f3e0946e80442972b025dbf8ffd921c98da9c79ea6eef8",
     "invoice-snapshot.json": "sha256:4cd9a62b9a18c941805463e0188c3d44348b8571b9f961fb3d4b900668af4d8d",
     "organization-update.json": "sha256:108f3c7c95ed3a780e46ea6134b5fc4f4d30a62b74aa92a7842abae2f80f6918",
+    "price-list-response.json": "sha256:22f0299e4cdd7e58426fec183f25e8e44680067e27c228f45380fd40f138bb39",
     "price-resolve-request.json": "sha256:48cc31f2fa8c9b0e4ec1353f41ca3601967dd81915c94c22966dec250af6d63e",
     "price-resolve-response.json": "sha256:b595c234d049f38d76394fb4934c1d324c568683f84aab3043a6030d7fe00d73",
     "provision-request.json": "sha256:f2740cf04fbb7cb9c535eb9521301f7b7503f02601a334bcbb88bdff194c44e2",

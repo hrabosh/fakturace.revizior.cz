@@ -1,0 +1,17 @@
+{
+  "specVersion": "1.0",
+  "data": {
+    "items": [
+      {
+        "code": "REV_ELEKTRO_PRAVIDELNA",
+        "name": "Pravidelná revize elektrické instalace",
+        "unit": "ks",
+        "vatRate": "21.00"
+      }
+    ]
+  },
+  "meta": {
+    "contractVersion": "1.0",
+    "requestId": "10000000-0000-4000-8000-000000000006"
+  }
+}

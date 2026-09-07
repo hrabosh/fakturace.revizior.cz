@@ -182,7 +182,7 @@ async function verify() {
         <!-- Fallback: MyInvoice branding -->
         <template v-else>
           <div class="w-8 h-8 rounded-md flex items-center justify-center text-white font-bold"
-            :style="{ background: preview?.accent_color || '#123056' }">M</div>
+            :style="{ background: preview?.accent_color || '#16357A' }">M</div>
           <div class="text-sm">
             <div class="font-semibold">My<span class="text-primary-700">Invoice</span><span class="text-neutral-500">.cz</span></div>
             <div class="text-xs text-neutral-500">{{ t('workReportTracking.public.title') }}</div>
@@ -250,7 +250,7 @@ async function verify() {
         </div>
 
         <!-- Preview -->
-        <div v-else-if="preview" class="space-y-4 wr-scope" :style="{ '--wr-accent': preview.accent_color || '#123056' }">
+        <div v-else-if="preview" class="space-y-4 wr-scope" :style="{ '--wr-accent': preview.accent_color || '#16357A' }">
           <div class="wr-hero rounded-xl shadow-sm overflow-hidden">
             <div class="px-6 pt-5 pb-5">
               <div class="wr-eyebrow text-xs font-semibold uppercase tracking-wider mb-3">{{ t('workReportTracking.public.title') }}</div>

@@ -65,8 +65,14 @@ final class DeploymentCapabilities
         }
 
         return match ($module) {
-            'salesInvoices', 'clients', 'projects', 'priceList', 'bank', 'documents' => true,
-            'purchaseInvoices', 'tax', 'payroll', 'logbook', 'selfUpdate', 'myuctoUpgrade' => false,
+            // Agenda, kterou revizní technik vede vedle vystavených faktur:
+            // přijaté doklady, daně, mzdy a kniha jízd.
+            'salesInvoices', 'clients', 'projects', 'priceList', 'bank', 'documents',
+            'purchaseInvoices', 'tax', 'payroll', 'logbook' => true,
+            // Zůstávají vypnuté schválně: aktualizaci instalace řídí nasazení
+            // z CI, ne tenant, a upgrade na cizí produkt do managed režimu
+            // nepatří.
+            'selfUpdate', 'myuctoUpgrade' => false,
             default => false,
         };
     }
