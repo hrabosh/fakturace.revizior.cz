@@ -20,7 +20,7 @@ const emailPreview = ref<{ profile: BrandingProfile; locale: 'cs' | 'en'; html: 
 
 const emptyProfile = (): Partial<BrandingProfile> => ({
   name: '', display_name: null, tagline: null, email: null, reply_to: null,
-  phone: null, web: null, email_footer: null, email_profile_id: null, accent_color: '#3B2D83',
+  phone: null, web: null, email_footer: null, email_profile_id: null, accent_color: '#123056',
   branding_enabled: true, pdf_logo_show_name: true, is_active: true,
 })
 

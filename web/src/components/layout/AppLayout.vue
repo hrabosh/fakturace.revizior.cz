@@ -731,7 +731,10 @@ onMounted(async () => {
           <RouterView />
         </main>
 
-        <footer class="px-5 sm:px-8 py-5 border-t border-neutral-200 text-xs text-neutral-500 flex flex-wrap items-center gap-x-1.5 gap-y-1 leading-none">
+        <!-- Managed instalace nese značku provozovatele; atribuci autora i výzvu
+             k podpoře drží LICENSE v distribuci, do UI zákazníka nepatří. -->
+        <footer v-if="!auth.isManaged"
+                class="px-5 sm:px-8 py-5 border-t border-neutral-200 text-xs text-neutral-500 flex flex-wrap items-center gap-x-1.5 gap-y-1 leading-none">
           <span>Developed by</span>
           <a href="https://mywebdesign.cz" target="_blank" rel="noopener" class="hover:text-neutral-700">MyWebdesign.cz s.r.o.</a>
           <span aria-hidden="true">·</span>
