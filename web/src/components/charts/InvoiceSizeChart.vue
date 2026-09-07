@@ -18,8 +18,8 @@ const { isDark } = useTheme()
 
 // Gradient velikosti faktur; v dark posunutý do viditelného rozsahu (nejtmavší indigo splývá).
 const palette = computed(() => isDark.value
-  ? ['#6753AE', '#8675C5', '#A99CD8', '#C9C0E9']
-  : ['#A99CD8', '#6753AE', '#3B2D83', '#15131D'])
+  ? ['#24548F', '#4E7BB0', '#8AA9CC', '#C0D2E4']
+  : ['#8AA9CC', '#24548F', '#123056', '#0F1722'])
 
 function formatCzk(n: number): string {
   if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + 'M Kč'
@@ -37,7 +37,7 @@ function build() {
       labels: props.buckets.map(b => b.label),
       datasets: [{
         data: props.buckets.map(b => b.count),
-        backgroundColor: props.buckets.map((_, i) => palette.value[i] ?? '#5C45A0'),
+        backgroundColor: props.buckets.map((_, i) => palette.value[i] ?? '#1A4173'),
         borderRadius: 4,
       }],
     },

@@ -1023,10 +1023,10 @@ async function removeLogo() {
               <div class="flex items-center gap-3">
                 <input v-model="supplier.email_accent_color" type="color" :disabled="!supplier.email_branding_enabled"
                   class="h-10 w-14 cursor-pointer rounded border border-neutral-300 disabled:opacity-50" />
-                <input v-model="supplier.email_accent_color" type="text" placeholder="#3B2D83" pattern="^#[0-9A-Fa-f]{6}$"
+                <input v-model="supplier.email_accent_color" type="text" placeholder="#123056" pattern="^#[0-9A-Fa-f]{6}$"
                   :disabled="!supplier.email_branding_enabled" class="h-10 w-32 px-3 border border-neutral-300 rounded-md text-sm font-mono disabled:opacity-50" />
                 <button type="button" :disabled="!supplier.email_branding_enabled" class="text-xs text-neutral-500 disabled:opacity-50"
-                  @click="supplier.email_accent_color = '#3B2D83'">{{ t('settings.branding_accent_reset') }}</button>
+                  @click="supplier.email_accent_color = '#123056'">{{ t('settings.branding_accent_reset') }}</button>
               </div>
             </div>
             <button class="px-4 h-10 bg-primary-600 text-white text-sm font-medium rounded-md" @click="saveBranding(false)">{{ t('settings.branding_save') }}</button>

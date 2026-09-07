@@ -5,29 +5,29 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  /* ─── Primary — indigo (sladěno s MyWebdesign.cz brand #3B2D83) ─── */
-  --color-primary-50:  #F4F2FB;
-  --color-primary-100: #E5E0F4;
-  --color-primary-200: #C9C0E9;
-  --color-primary-300: #A99CD8;
-  --color-primary-400: #8675C5;
-  --color-primary-500: #6753AE;   /* lehce světlejší — main interactive, logo */
-  --color-primary-600: #5C45A0;   /* primary button */
-  --color-primary-700: #3B2D83;   /* BRAND (deep) — accents, faktura hlavička */
-  --color-primary-800: #2E2367;
-  --color-primary-900: #211A4B;
+  /* ─── Primary — navy (značka reviziORu, odvozeno z #07162B) ─── */
+  --color-primary-50:  #F2F6FA;
+  --color-primary-100: #E1EAF3;
+  --color-primary-200: #C0D2E4;
+  --color-primary-300: #8AA9CC;
+  --color-primary-400: #4E7BB0;
+  --color-primary-500: #24548F;   /* lehce světlejší — main interactive, logo */
+  --color-primary-600: #1A4173;   /* primary button */
+  --color-primary-700: #123056;   /* BRAND (deep) — accents, faktura hlavička */
+  --color-primary-800: #0C2141;
+  --color-primary-900: #07162B;   /* BRAND základ — text a plochy v reviziORu */
 
-  /* ─── Neutral (teplá šedá s nádechem indigo) ─── */
-  --color-neutral-50:  #FBFAFD;   /* page background */
-  --color-neutral-100: #F4F2F8;   /* subtle tint */
-  --color-neutral-200: #E7E3EE;   /* borders */
-  --color-neutral-300: #D2CCDF;
-  --color-neutral-400: #A7A0BA;
-  --color-neutral-500: #7A748C;
-  --color-neutral-600: #5A5470;
-  --color-neutral-700: #403B52;
-  --color-neutral-800: #2A2638;
-  --color-neutral-900: #15131D;   /* text */
+  /* ─── Neutral (chladná šedá s nádechem navy) ─── */
+  --color-neutral-50:  #FAFBFC;   /* page background */
+  --color-neutral-100: #F2F5F8;   /* subtle tint */
+  --color-neutral-200: #E4E9EF;   /* borders */
+  --color-neutral-300: #CBD4DE;
+  --color-neutral-400: #9AA7B6;
+  --color-neutral-500: #6B7A8C;
+  --color-neutral-600: #4C5A6B;
+  --color-neutral-700: #35414F;
+  --color-neutral-800: #1F2937;
+  --color-neutral-900: #0F1722;   /* text */
 
   /* ─── Surfaces (hodnoty přepínané v .dark) ─── */
   --color-surface:   #FFFFFF;   /* karty, panely, modály, topbar, sidebar (light = bílá) */
@@ -56,18 +56,18 @@
   --color-danger-600:  #B84545;
 
   /* ─── Status badges (faktury) ─── */
-  --color-status-draft-bg:     #F4F2F8;
-  --color-status-draft-fg:     #5A5470;
-  --color-status-issued-bg:    #E5E0F4;
-  --color-status-issued-fg:    #3B2D83;
+  --color-status-draft-bg:     #F2F5F8;
+  --color-status-draft-fg:     #4C5A6B;
+  --color-status-issued-bg:    #E1EAF3;
+  --color-status-issued-fg:    #123056;
   --color-status-sent-bg:      #D7E8F6;
   --color-status-sent-fg:      #1F5E97;
   --color-status-paid-bg:      #ECF6F0;
   --color-status-paid-fg:      #2E7B53;
   --color-status-overdue-bg:   #FBEDED;
   --color-status-overdue-fg:   #B84545;
-  --color-status-cancelled-bg: #F4F2F8;
-  --color-status-cancelled-fg: #A7A0BA;
+  --color-status-cancelled-bg: #F2F5F8;
+  --color-status-cancelled-fg: #9AA7B6;
 
   --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-mono: "Geist Mono", ui-monospace, "SF Mono", Consolas, monospace;
@@ -83,7 +83,7 @@
  * Neutral škála se obrací (50 = nejtmavší pozadí … 900 = nejsvětlejší text),
  * takže ~3400 výskytů bg-neutral-50 / text-neutral-900 / border-neutral-200
  * se překlopí samo. bg-white se nahrazuje za bg-surface (viz převod komponent).
- * Laděno k indigo brandu #3B2D83. Light mód zůstává beze změny.
+ * Laděno k navy brandu reviziORu #07162B. Light mód zůstává beze změny.
  * How to apply: .dark třídu na <html> řídí composable useTheme. */
 .dark {
   /* Nativní ovládací prvky (kalendář u input[type=date], scrollbary, checkboxy…)
