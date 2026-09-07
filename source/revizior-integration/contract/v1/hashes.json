@@ -7,6 +7,7 @@
     "client-upsert-response.json": "sha256:a7d5b12a4ed9eafd1272c965ee95ad762ecff41f3a6e3905426e1f371deb1927",
     "errors/validation-failed.json": "sha256:ff32d40525e7f4cd568b6a23a77fcbe3b0968dc26d4d4c1cd05709bc74beee01",
     "events/invoice-issued.json": "sha256:5f3adcf62c0ac35a28b7ce4f23c7b5af87771d8e07a23f99f1a249608067cd48",
+    "events/organization-onboarding-changed.json": "sha256:351767765eb0a023b0db84a55a81ef5fe31afb313fb7ba2325e7d2fc6800740c",
     "invoice-draft-request.json": "sha256:dd5a51607857c27411f3e0946e80442972b025dbf8ffd921c98da9c79ea6eef8",
     "invoice-snapshot.json": "sha256:4cd9a62b9a18c941805463e0188c3d44348b8571b9f961fb3d4b900668af4d8d",
     "organization-update.json": "sha256:108f3c7c95ed3a780e46ea6134b5fc4f4d30a62b74aa92a7842abae2f80f6918",

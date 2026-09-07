@@ -44,6 +44,7 @@ final class SettingsAction
         private readonly \MyInvoice\Service\Report\EpoIdentityValidator $epoValidator,
         private readonly \MyInvoice\Repository\UserSupplierRepository $userSuppliers,
         private readonly PermissionPolicy $permissions,
+        private readonly \MyInvoice\Service\Integration\Revizior\ReviziorOnboardingService $reviziorOnboarding,
     ) {}
 
     /** Aktuální supplier (z X-Supplier-Id middleware). */
@@ -550,6 +551,10 @@ final class SettingsAction
         if ($czNaceWarning !== null) {
             $extra['cz_nace_warning'] = $czNaceWarning;
         }
+        // Dokud se stav nepřepočítá, ReviziOR hlásí „nastavení není dokončené"
+        // a nepustí vystavit doklad — i když je identita vyplněná. Dodavatel
+        // bez vazby na ReviziOR je no-op.
+        $this->reviziorOnboarding->refreshForSupplier($id);
         return $this->respondSupplier($response, $id, $extra);
     }
 
