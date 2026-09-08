@@ -96,6 +96,42 @@ SSO ticket chodí v query stringu, takže by se otiskl do access logu. Formát
 `location =` nestačí** — `try_files` skočí do jiného bloku a platí log toho
 cílového; proto je pojmenovaná lokace.
 
+## Cache: `index.html` se musí ověřovat
+
+Vhost servíruje SPA přes `try_files $uri /web/dist/index.html`. Bez explicitní
+hlavičky si prohlížeč `index.html` **cachuje heuristicky** podle `Last-Modified`
+a nasazená verze k uživateli nedorazí — vypadá to, jako by deploy neproběhl,
+přestože na serveru leží nový build i nový bundle.
+
+Stalo se to 2026-09-07: server servíroval nový `index-*.js`, uživatel viděl
+starou patičku a chybějící tlačítko.
+
+```nginx
+location / {
+    add_header Cache-Control "no-cache";
+    try_files $uri /web/dist/index.html;
+}
+location = /service-worker.js {
+    alias /var/www/fakturace.revizior.cz/current/web/dist/service-worker.js;
+    add_header Cache-Control "no-cache";
+}
+```
+
+`no-cache` neznamená „necachovat", ale „před použitím se zeptej" — s `ETag` se
+tedy nepřenáší nic navíc. Hashované soubory pod `/assets/` zůstávají
+`immutable`: jejich název se při každé změně mění, takže je prohlížeč nikdy
+nesmí ověřovat znovu.
+
+**Ověření po zásahu do vhostu:**
+
+```bash
+curl -sI https://fakturace.revizior.cz/ | grep -i cache-control          # no-cache
+curl -sI https://fakturace.revizior.cz/assets/<hash>.js | grep -i cache  # immutable
+```
+
+Uživatel, který má starou verzi z doby před opravou, potřebuje jednou tvrdé
+načtení (Ctrl+Shift+R). Od té doby chodí nové verze samy.
+
 ## CI/CD
 
 Job `deploy` v `.github/workflows/ci.yml` běží na push do `master`, až projdou
