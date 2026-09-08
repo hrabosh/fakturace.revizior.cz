@@ -9,15 +9,15 @@
 {# Branding barva se propaguje jen když má dodavatel zapnutý branding (konzistentní
    s PDF i logem). Bez brandingu = default fialová MyInvoice. Tělové šablony používají
    {{ accent }} pro částky, tlačítka a odkazy — proto je viditelný i v jejich blocích. #}
-{% set accent = (branded and supplier.email_accent_color) ? supplier.email_accent_color : '#3B2D83' %}
+{% set accent = (branded and supplier.email_accent_color) ? supplier.email_accent_color : '#123D75' %}
 {# accent_soft = světlá varianta akcentu (mix s bílou, počítaná v PHP přes AccentColor).
-   Bez brandingu / s default barvou je null → fallback na fixní MyInvoice #F4F2FB.
+   Bez brandingu / s default barvou je null → fallback na fixní MyInvoice #EFF3F8.
    Tělové šablony ji používají pro pozadí boxu s částkou (stejně jako {{ accent }}). #}
-{% set accent_soft = (branded and supplier.accent_soft) ? supplier.accent_soft : '#F4F2FB' %}
+{% set accent_soft = (branded and supplier.accent_soft) ? supplier.accent_soft : '#EFF3F8' %}
 {% set has_logo = (branded and supplier.logo_path) %}
-<body style="margin:0;padding:0;background:#F4F2F8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#15131D;">
+<body style="margin:0;padding:0;background:#F5F0E8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#07162B;">
 
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F4F2F8;padding:32px 16px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F5F0E8;padding:32px 16px;">
   <tr>
     <td align="center">
 
@@ -50,12 +50,12 @@
                 </td>
                 <td style="vertical-align:middle;padding-left:12px;">
                   {% if branded %}
-                    <div style="font-size:18px;font-weight:600;color:#15131D;line-height:1.2;">{{ supplier.display_name|default(supplier.company_name) }}</div>
+                    <div style="font-size:18px;font-weight:600;color:#07162B;line-height:1.2;">{{ supplier.display_name|default(supplier.company_name) }}</div>
                     {% if supplier.tagline %}
                       <div style="font-size:12px;color:#7A748C;line-height:1.4;margin-top:2px;">{{ supplier.tagline }}</div>
                     {% endif %}
                   {% else %}
-                    <div style="font-size:18px;font-weight:600;color:#15131D;line-height:1.2;">My<span style="color:{{ accent }};">Invoice</span><span style="color:#7A748C;font-weight:400;">.cz</span></div>
+                    <div style="font-size:18px;font-weight:600;color:#07162B;line-height:1.2;">My<span style="color:{{ accent }};">Invoice</span><span style="color:#7A748C;font-weight:400;">.cz</span></div>
                     <div style="font-size:12px;color:#7A748C;line-height:1.4;margin-top:2px;">{{ locale == 'en' ? 'Invoicing system' : 'Fakturační systém' }}</div>
                   {% endif %}
                 </td>
@@ -84,7 +84,7 @@
               {% if supplier.display_name or supplier.tagline %}
               <tr>
                 <td style="padding-bottom:12px;">
-                  {% if supplier.display_name %}<strong style="color:#15131D;font-size:14px;">{{ supplier.display_name }}</strong><br>{% endif %}
+                  {% if supplier.display_name %}<strong style="color:#07162B;font-size:14px;">{{ supplier.display_name }}</strong><br>{% endif %}
                   {% if supplier.tagline %}<span style="color:#7A748C;font-style:italic;">{{ supplier.tagline }}</span><br>{% endif %}
                   {% if supplier.email %}<a href="mailto:{{ supplier.email }}" style="color:{{ accent }};text-decoration:none;">{{ supplier.email }}</a>{% endif %}
                 </td>

@@ -81,3 +81,35 @@ doplněk, ne podmínka zobrazení faktury.
 Zbývá R7 hardening (threat model, penetrační test, key rotation rehearsal,
 zátěž, SLO a runbooky) a cutover: odstavení staré interní fakturace v ReviziORu
 až po ověřeném provozu.
+
+## Vizuální sjednocení s reviziORem (2026-09-08)
+
+Fakturace měla vlastní identitu (indigo, Inter, logo „M"), takže vedle aplikace
+působila jako cizí produkt. Sjednoceno na to, co reviziOR skutečně používá —
+ne na to, co má v Tailwind konfiguraci:
+
+| | hodnota | kde se v reviziORu bere |
+|---|---|---|
+| pozadí stránky | `#F5F0E8` | `<body>` a hlavní plochy |
+| text | `#07162B` | `body { color }` |
+| primární akce | `#123D75` | modř značky z loga |
+| zlatá | `#D9B24B` / `#E2A91A` | tlačítka a značka |
+| font | Plus Jakarta Sans | `base.html.twig` |
+
+**Font je hostovaný lokálně** (`web/public/fonts/`), ne z Google Fonts: CSP
+fakturace nepouští externí zdroje a font ze třetí strany by navíc prozradil
+návštěvu Googlu. Je variabilní, takže jeden soubor na sadu znaků pokrývá
+všechny váhy — 56 kB místo 260 kB.
+
+**Logo** je značka reviziORu (`styles/logo.svg`), vytažená z `public/icon.svg`
+aplikace bez Inkscape metadat. Z ní jsou odvozené i PWA ikony; maskable varianta
+má značku v bezpečné zóně (vnitřních 80 %) na krémovém podkladu — na navy byl
+modrý štít skoro neviditelný.
+
+**Barvy e-mailů a PDF se změnily taky.** Výchozí akcent byl fialový
+(`#3B2D83`), takže doklady a e-maily odcházely klientům technika v barvách
+cizího produktu. Layout ani struktura šablon se nemění.
+
+Layout zůstal, jak byl: fakturace má horní lištu, reviziOR svislé menu.
+Přestavba by byla velký zásah s malým přínosem — vjem „jeden produkt" nese
+barva, font a značka.

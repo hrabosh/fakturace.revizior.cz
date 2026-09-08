@@ -37,8 +37,8 @@ final class OpenApiAction
   <link rel="icon" type="image/svg+xml" href="/styles/logo.svg">
   <style>
     :root {
-      --primary: #6753AE;
-      --primary-dark: #3B2D83;
+      --primary: #1B5089;
+      --primary-dark: #123D75;
       --primary-soft: #ede9fe;
       --primary-softer: #f5f3ff;
       --accent: #f59e0b;
@@ -47,7 +47,7 @@ final class OpenApiAction
       --border: #ecebe9;
       --text: #1f2937;
       --muted: #6b7280;
-      --ink: #15131D;
+      --ink: #07162B;
     }
     * { box-sizing: border-box; }
     html { font-size: 16px; }
@@ -132,7 +132,7 @@ final class OpenApiAction
       position: fixed;
       top: var(--hh); right: 0; bottom: 0;
       width: calc((100vw - 320px) * 0.42);
-      background: #15131D;
+      background: #07162B;
       z-index: -1;
       pointer-events: none;
     }
@@ -217,15 +217,15 @@ final class OpenApiAction
           large: '105rem'
         },
         colors: {
-          primary: { main: '#6753AE' },
+          primary: { main: '#1B5089' },
           success: { main: '#21A86A' },
           warning: { main: '#D49C2E' },
           error:   { main: '#D45B5B' },
-          text:    { primary: '#15131D', secondary: '#3F3A52' },
-          border:  { dark: '#3B2D83', light: '#ecebe9' },
+          text:    { primary: '#07162B', secondary: '#3F3A52' },
+          border:  { dark: '#123D75', light: '#ecebe9' },
           http: {
             get:    '#21A86A',
-            post:   '#6753AE',
+            post:   '#1B5089',
             put:    '#D49C2E',
             delete: '#D45B5B',
             patch:  '#7E6DD6'
@@ -246,20 +246,20 @@ final class OpenApiAction
             fontFamily: '"JetBrains Mono", "Fira Code", Consolas, monospace',
             fontSize: '14px',
             lineHeight: '1.55em',
-            color:    '#3B2D83',
+            color:    '#123D75',
             backgroundColor: '#f5f3ff',
             wrap: true
           },
-          links: { color: '#6753AE', visited: '#6753AE', hover: '#3B2D83' }
+          links: { color: '#1B5089', visited: '#1B5089', hover: '#123D75' }
         },
         sidebar: {
           backgroundColor: '#f5f3fb',
-          textColor: '#15131D',
+          textColor: '#07162B',
           width: '320px'
         },
         rightPanel: {
-          backgroundColor: '#15131D',
-          textColor: '#F4F2F8',
+          backgroundColor: '#07162B',
+          textColor: '#F5F0E8',
           width: '42%'
         },
         codeBlock: {
@@ -311,8 +311,8 @@ HTML;
   <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css">
   <style>
     :root {
-      --primary: #6753AE;
-      --primary-dark: #3B2D83;
+      --primary: #1B5089;
+      --primary-dark: #123D75;
       --primary-soft: #ede9fe;
       --primary-softer: #f5f3ff;
       --accent: #f59e0b;
@@ -323,7 +323,7 @@ HTML;
       --border: #ecebe9;
       --text: #1f2937;
       --muted: #6b7280;
-      --ink: #15131D;
+      --ink: #07162B;
       --shadow-sm: 0 2px 8px rgba(59, 45, 131, 0.06);
       --shadow: 0 6px 22px rgba(59, 45, 131, 0.08);
     }
@@ -583,8 +583,8 @@ HTML;
   <link rel="icon" type="image/svg+xml" href="/styles/logo.svg">
   <style>
     :root {
-      --primary: #6753AE;
-      --primary-dark: #3B2D83;
+      --primary: #1B5089;
+      --primary-dark: #123D75;
       --primary-soft: #ede9fe;
       --primary-softer: #f5f3ff;
       --accent: #f59e0b;
@@ -593,7 +593,7 @@ HTML;
       --border: #ecebe9;
       --text: #1f2937;
       --muted: #6b7280;
-      --ink: #15131D;
+      --ink: #07162B;
     }
     * { box-sizing: border-box; }
     /* ⚠️ NEdávat overflow-x:hidden na html/body — CSS spec pak promotuje
@@ -712,8 +712,8 @@ HTML;
       metaData: { title: 'MyInvoice.cz API — Scalar' },
       customCss: `
         .scalar-app, :root {
-          --scalar-color-accent: #6753AE;
-          --scalar-color-1: #15131D;
+          --scalar-color-accent: #1B5089;
+          --scalar-color-1: #07162B;
           --scalar-color-2: #3F3A52;
           --scalar-color-3: #6b7280;
           --scalar-background-1: #ffffff;
@@ -725,7 +725,7 @@ HTML;
           --scalar-font: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", sans-serif;
           --scalar-font-code: "JetBrains Mono", "Fira Code", Consolas, monospace;
           --scalar-color-green:  #21A86A;
-          --scalar-color-blue:   #6753AE;
+          --scalar-color-blue:   #1B5089;
           --scalar-color-orange: #D49C2E;
           --scalar-color-yellow: #D49C2E;
           --scalar-color-red:    #D45B5B;
@@ -733,12 +733,12 @@ HTML;
         }
         .scalar-app .sidebar {
           --scalar-sidebar-background-1: #f5f3fb;
-          --scalar-sidebar-color-1: #15131D;
+          --scalar-sidebar-color-1: #07162B;
           --scalar-sidebar-color-2: #3F3A52;
           --scalar-sidebar-border-color: #ecebe9;
           --scalar-sidebar-item-hover-background: #ede9fe;
           --scalar-sidebar-item-active-background: #ede9fe;
-          --scalar-sidebar-color-active: #3B2D83;
+          --scalar-sidebar-color-active: #123D75;
           --scalar-sidebar-search-background: #ffffff;
           --scalar-sidebar-search-border-color: #ecebe9;
         }

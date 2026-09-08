@@ -439,7 +439,7 @@ final class SettingsAction
         if (array_key_exists('email_accent_color', $body)) {
             $v = trim((string) ($body['email_accent_color'] ?? ''));
             if ($v === '') {
-                $body['email_accent_color'] = '#3B2D83';
+                $body['email_accent_color'] = '#123D75';
             } elseif (!preg_match('/^#[0-9A-Fa-f]{6}$/', $v)) {
                 return Json::error($response, 'validation_failed', "email_accent_color musí být hex barva (#RRGGBB).", 400);
             }
@@ -660,7 +660,7 @@ final class SettingsAction
         $row['default_prices_include_vat'] = (bool) ($row['default_prices_include_vat'] ?? false);
         $row['embed_isdoc']              = (bool) ($row['embed_isdoc'] ?? true);
         $row['email_branding_enabled']   = (bool) ($row['email_branding_enabled'] ?? false);
-        $row['email_accent_color']       = (string) ($row['email_accent_color'] ?? '#3B2D83');
+        $row['email_accent_color']       = (string) ($row['email_accent_color'] ?? '#123D75');
         $row['pdf_logo_show_name']       = (bool) ($row['pdf_logo_show_name'] ?? false);
         $row['branding_profiles_enabled'] = (bool) ($row['branding_profiles_enabled'] ?? false);
         $row['default_branding_profile_id'] = $row['default_branding_profile_id'] !== null

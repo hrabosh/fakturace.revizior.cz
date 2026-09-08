@@ -173,7 +173,7 @@ final class BrandingProfileRepository
         $out = [];
         foreach (self::FIELDS as $field) {
             $default = match ($field) {
-                'accent_color' => '#3B2D83',
+                'accent_color' => '#123D75',
                 'branding_enabled', 'pdf_logo_show_name', 'is_active' => true,
                 default => null,
             };
@@ -187,7 +187,7 @@ final class BrandingProfileRepository
         if (in_array($field, ['branding_enabled', 'pdf_logo_show_name', 'is_active'], true)) return !empty($value) ? 1 : 0;
         if ($field === 'email_profile_id') return $value === null || $value === '' ? null : (int) $value;
         $value = trim((string) ($value ?? ''));
-        if ($field === 'accent_color') return strtoupper($value ?: '#3B2D83');
+        if ($field === 'accent_color') return strtoupper($value ?: '#123D75');
         return $value === '' && $field !== 'name' ? null : $value;
     }
 

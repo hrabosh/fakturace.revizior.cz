@@ -1,14 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 64" role="img" aria-label="MyInvoice.cz">
   <defs>
     <linearGradient id="mi-bg2" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#6753AE"/>
-      <stop offset="1" stop-color="#3B2D83"/>
+      <stop offset="0" stop-color="#1B5089"/>
+      <stop offset="1" stop-color="#123D75"/>
     </linearGradient>
   </defs>
   <rect x="4" y="4" width="56" height="56" rx="10" fill="url(#mi-bg2)"/>
   <path d="M14 46 V18 L24 18 L32 34 L40 18 L50 18 V46 H43 V28 L34 44 L30 44 L21 28 V46 Z" fill="#FFFFFF"/>
   <circle cx="50" cy="14" r="8" fill="#FFFFFF"/>
-  <path d="M46.5 14 L49 16.5 L53.5 11.5" fill="none" stroke="#3B2D83" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-  <text x="76" y="42" font-family="Inter, system-ui, sans-serif" font-weight="700" font-size="28" fill="#15131D">My<tspan fill="#3B2D83">Invoice</tspan></text>
+  <path d="M46.5 14 L49 16.5 L53.5 11.5" fill="none" stroke="#123D75" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="76" y="42" font-family="Inter, system-ui, sans-serif" font-weight="700" font-size="28" fill="#07162B">My<tspan fill="#123D75">Invoice</tspan></text>
   <text x="76" y="56" font-family="Inter, system-ui, sans-serif" font-weight="500" font-size="11" fill="#7A748C" letter-spacing="2">FAKTURY · QR · ARES</text>
 </svg>

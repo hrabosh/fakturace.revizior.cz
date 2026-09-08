@@ -3436,7 +3436,7 @@
     "branding_logo_show_name": "Show company name next to logo",
     "branding_logo_show_name_hint": "By default the invoice PDF shows the logo only. Enable this if the logo is small or has no name — the trade (or company) name will then be rendered next to the logo.",
     "branding_accent_color": "Accent color",
-    "branding_accent_color_hint": "Color of the „M\" logo (if you have no custom logo) and of links in the email. Default #3B2D83 (MyInvoice purple).",
+    "branding_accent_color_hint": "Color of email links and of the logo when you have no custom one. Default #123D75 (reviziOR blue).",
     "branding_accent_reset": "↺ default",
     "branding_save_hint": "Toggle and color save automatically (color picker with 0.5 s debounce) — the preview on the right refreshes after each change. Logo uploads automatically. When branding is enabled, the same logo is used on invoice PDFs — when disabled, PDFs show the company name as text.",
     "branding_preview": "Email preview",

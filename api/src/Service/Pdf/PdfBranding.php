@@ -65,7 +65,7 @@ final class PdfBranding
     }
 
     /**
-     * Per-supplier accent override CSS — přebarví fialové akcenty (#3B2D83 + světlé
+     * Per-supplier accent override CSS — přebarví fialové akcenty (#123D75 + světlé
      * varianty/linky) na zvolenou barvu. Gated na email_branding_enabled + nedefaultní
      * hex. Vrací '' pokud branding vypnutý nebo defaultní barva (ta je už v base CSS).
      *
