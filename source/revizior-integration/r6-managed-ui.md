@@ -146,3 +146,30 @@ Vypnuto na třech místech, protože každé samo o sobě umí `.dark` nasadit:
 
 Tokeny `.dark` v `styles/main.css` **zůstávají** a jsou v barvách reviziORu:
 až tmavý režim dostane hlavní aplikace, zapne se to zpátky bez dalšího ladění.
+
+### Kde jakou barvu použít
+
+Splývání ploch nevyřeší jiná paleta, ale důslednost v tom, co která barva
+znamená. Konvence (2026-09-09):
+
+| Plocha | Barva | Proč |
+|---|---|---|
+| plátno stránky | krémová `#F5F0E8` (`neutral-50`) | totéž pozadí jako reviziOR |
+| karta, tabulka, modál | bílá (`surface`) | kontrast proti plátnu dělá hranici karty |
+| svislé menu | navy `#07162B` (`primary-900`) | těžká plocha vlevo drží rozvržení |
+| horní lišta | krémová jako plátno | bílá lišta splývala s kartami |
+| primární akce | modř značky `#123D75` | jediná sytá modrá v UI |
+| aktivní položka menu | zlatá `#E2A91A` na tlumeném podkladu | jediné místo, kde zlatá nese význam |
+| ohraničení | `neutral-200` `#E3DACB` | teplý tón, ne šedá |
+
+Dvě pravidla, která se snadno poruší:
+
+- **Zlatá je jen pro „tady jsi".** Jakmile se použije i na tlačítka nebo
+  odznaky, přestane v menu fungovat jako vodítko.
+- **Sekce menu nejsou semafor.** Barevné pilulky (`warning`, `success`,
+  `danger`) u nadpisů sekcí braly pozornost jako stavové hlášky; na tmavém
+  podkladu stačí tlumený text.
+
+Barvy chromu žijí v `styles/main.css` **mimo `@layer`** — Tailwind řadí
+`utilities` až za `components`, takže by je jinak přebily utility v šabloně.
+Šablona proto nese jen sémantické třídy (`app-sidebar__item`), ne barvy.

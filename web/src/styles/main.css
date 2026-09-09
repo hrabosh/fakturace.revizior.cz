@@ -148,6 +148,80 @@
   --color-purple-700: #C2A6EC;
 }
 
+/* ═══════════════════ CHROM APLIKACE (sidebar + topbar) ═══════════════════
+ * Why: reviziOR staví na tmavém svislém menu, krémovém plátně a bílých
+ * kartách. Fakturace měla menu i topbar bílé jako karty, takže se plochy
+ * slily do jedné světlé mlhy a nebylo poznat, kde končí navigace a začíná
+ * obsah.
+ *
+ * Pravidla schválně stojí MIMO @layer: Tailwind řadí `utilities` až za
+ * `components`, takže by je utility v markupu (`text-neutral-600`,
+ * `hover:bg-neutral-100`) přebily bez ohledu na specificitu. Takhle stačí
+ * v šabloně přidat třídu a barvové utility se nemusí vypisovat pryč.
+ */
+.app-topbar {
+  background: var(--color-neutral-50);
+  border-bottom-color: rgba(7, 22, 43, 0.10);
+}
+
+.app-sidebar {
+  background: var(--color-primary-900);
+  border-right-color: rgba(245, 240, 232, 0.10);
+}
+
+.app-sidebar .app-sidebar__item {
+  color: rgba(245, 240, 232, 0.72);
+}
+
+.app-sidebar .app-sidebar__item:hover {
+  color: #F5F0E8;
+  background: rgba(245, 240, 232, 0.08);
+}
+
+/* Aktivní položka nese zlatou — stejné vodítko jako v hlavní aplikaci. */
+.app-sidebar .app-sidebar__item--active,
+.app-sidebar .app-sidebar__item--active:hover {
+  color: var(--color-gold-500);
+  background: rgba(226, 169, 26, 0.14);
+}
+
+.app-sidebar .app-sidebar__item svg { color: inherit; }
+
+/* Nadpis sekce: na tmavém podkladu stačí tlumený text, barevná pilulka by
+   z menu udělala semafor. */
+.app-sidebar .app-sidebar__section {
+  background: transparent;
+  color: rgba(245, 240, 232, 0.45);
+  padding-left: 0.375rem;
+}
+
+.app-sidebar .app-sidebar__search input {
+  background: rgba(245, 240, 232, 0.07);
+  border-color: rgba(245, 240, 232, 0.14);
+  color: #F5F0E8;
+}
+
+.app-sidebar .app-sidebar__search input::placeholder { color: rgba(245, 240, 232, 0.45); }
+
+.app-sidebar .app-sidebar__search input:focus {
+  background: rgba(245, 240, 232, 0.12);
+  border-color: var(--color-gold-600);
+}
+
+.app-sidebar .app-sidebar__quick { color: rgba(245, 240, 232, 0.45); }
+
+.app-sidebar .app-sidebar__quick:hover {
+  color: var(--color-gold-500);
+  background: rgba(226, 169, 26, 0.16);
+}
+
+.app-sidebar .app-sidebar__footer {
+  border-top-color: rgba(245, 240, 232, 0.10);
+  color: rgba(245, 240, 232, 0.55);
+}
+
+.app-sidebar .app-sidebar__footer a:hover { color: var(--color-gold-500); }
+
 html, body {
   background: var(--color-neutral-50);
   color: var(--color-neutral-900);

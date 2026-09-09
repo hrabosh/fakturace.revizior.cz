@@ -12,11 +12,7 @@ import { useSessionSecurityStore } from '@/stores/sessionSecurity'
 import { useToast } from '@/composables/useToast'
 import type { DeploymentModule } from '@/api/auth'
 
-const { t, locale } = useI18n()
-function setLocale(l: 'cs' | 'en') {
-  locale.value = l
-  localStorage.setItem('locale', l)
-}
+const { t } = useI18n()
 
 const router = useRouter()
 const route = useRoute()
@@ -105,19 +101,8 @@ interface NavItem {
 interface NavSection {
   /** Hlavička sekce; pokud chybí, položky jsou bez visual grouping */
   title?: string
-  /** Color accent pro vertikální pruh + text. Tailwind utility class group. */
-  accent?: 'primary' | 'warning' | 'success' | 'danger' | 'neutral'
   module?: DeploymentModule
   items: NavItem[]
-}
-
-/** Mapování accent → soft pill (background + text) per sekce. */
-const ACCENT_CLASSES: Record<NonNullable<NavSection['accent']>, string> = {
-  primary: 'bg-primary-50  text-primary-700',
-  warning: 'bg-warning-50  text-warning-600',
-  success: 'bg-success-50  text-success-600',
-  danger:  'bg-danger-50   text-danger-500',
-  neutral: 'bg-neutral-100 text-neutral-600',
 }
 
 /** Outline icon paths — Heroicons style, stroke 2, viewBox 24, currentColor */
@@ -179,7 +164,6 @@ const navSections = computed<NavSection[]>(() => {
       // Vše co se týká vystavování faktur klientům — klienti/zakázky/schvalování/exporty
       // patří v životním cyklu jednoho prodeje (klient → zakázka → faktura → schválení → export pro účetní).
       title: t('nav.section_sales'),
-      accent: 'primary',
       items: [
         { to: '/invoices',         label: t('nav.invoices'),   icon: ICONS.invoices,  newTo: '/invoices/new' },
         { to: '/recurring',        label: t('nav.recurring'),  icon: ICONS.recurring, newTo: '/recurring/new' },
@@ -194,7 +178,6 @@ const navSections = computed<NavSection[]>(() => {
     },
     {
       title: t('nav.section_purchase'),
-      accent: 'warning',
       module: 'purchaseInvoices',
       items: [
         { to: '/purchase-invoices',          label: t('nav.purchase_invoices'),  icon: ICONS.purchase, newTo: '/purchase-invoices/new' },
@@ -207,7 +190,6 @@ const navSections = computed<NavSection[]>(() => {
     },
     {
       title: t('nav.section_finance'),
-      accent: 'success',
       items: [
         { to: '/crm',            label: t('nav.crm'),            icon: ICONS.crm },
         { to: '/stats',          label: t('nav.stats'),          icon: ICONS.stats },
@@ -218,7 +200,6 @@ const navSections = computed<NavSection[]>(() => {
     },
     {
       title: t('nav.section_documents'),
-      accent: 'neutral',
       items: [
         { to: '/documents', label: t('nav.documents'), icon: ICONS.documents },
         { to: '/logbook', label: t('nav.logbook'), icon: ICONS.logbook, newTo: '/logbook?tab=trips&new=trip' },
@@ -226,7 +207,6 @@ const navSections = computed<NavSection[]>(() => {
     },
     {
       title: t('nav.section_taxes'),
-      accent: 'danger',
       module: 'tax',
       items: [
         { to: '/reports/dph',         label: t('nav.reports_dph'),         icon: ICONS.tax_dph },
@@ -247,7 +227,6 @@ const navSections = computed<NavSection[]>(() => {
     // Sjednocený "Import" pokrývá vystavené i přijaté faktury (admin/import s tabs).
     sections.push({
       title: t('nav.system'),
-      accent: 'neutral',
       items: [
         { to: '/admin/settings',         label: t('nav.settings'),        icon: ICONS.settings },
         { to: '/admin/codebooks',        label: t('nav.codebooks'),       icon: ICONS.codebooks },
@@ -269,7 +248,6 @@ const navSections = computed<NavSection[]>(() => {
       || (auth.user?.role === 'accountant' && accountantSigningProfilesEnabled.value))) {
     sections.push({
       title: t('nav.system'),
-      accent: 'neutral',
       items: [
         ...(auth.hasPermission('supplier_settings.manage')
           ? [{ to: '/settings/supplier', label: t('nav.supplier_settings'), icon: ICONS.settings }]
@@ -390,7 +368,7 @@ onMounted(async () => {
   <div class="min-h-screen flex flex-col bg-neutral-50">
 
     <!-- ═════════════════════ TOPBAR ═════════════════════ -->
-    <header class="sticky top-0 z-30 bg-surface border-b border-neutral-200">
+    <header class="app-topbar sticky top-0 z-30 border-b border-neutral-200">
       <div class="h-14 px-4 flex items-center justify-between gap-3">
         <!-- Logo -->
         <RouterLink to="/" class="flex items-center gap-2.5 shrink-0" @click="mobileOpen = false">
@@ -455,35 +433,6 @@ onMounted(async () => {
             class="hidden lg:inline text-sm text-neutral-600 hover:text-primary-700 hover:underline"
             :title="t('auth.profile_title')"
           >{{ auth.user?.name }}</RouterLink>
-
-          <!-- Locale switcher (CZ / EN s SVG vlajkami) -->
-          <div class="hidden sm:inline-flex items-center border border-neutral-200 rounded-md overflow-hidden">
-            <button
-              @click="setLocale('cs')" title="Čeština" aria-label="Čeština"
-              class="cursor-pointer h-8 px-2 inline-flex items-center"
-              :class="locale === 'cs' ? 'bg-primary-50' : 'hover:bg-neutral-50 grayscale opacity-60 hover:grayscale-0 hover:opacity-100'"
-            >
-              <svg width="22" height="15" viewBox="0 0 6 4" xmlns="http://www.w3.org/2000/svg">
-                <rect width="6" height="2" fill="#ffffff"/>
-                <rect y="2" width="6" height="2" fill="#d7141a"/>
-                <polygon points="0,0 3,2 0,4" fill="#11457e"/>
-              </svg>
-            </button>
-            <button
-              @click="setLocale('en')" title="English" aria-label="English"
-              class="cursor-pointer h-8 px-2 inline-flex items-center border-l border-neutral-200"
-              :class="locale === 'en' ? 'bg-primary-50' : 'hover:bg-neutral-50 grayscale opacity-60 hover:grayscale-0 hover:opacity-100'"
-            >
-              <svg width="22" height="15" viewBox="0 0 60 30" xmlns="http://www.w3.org/2000/svg">
-                <clipPath id="uk-flag-tb"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath>
-                <path d="M0,0 v30 h60 v-30 z" fill="#012169"/>
-                <path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/>
-                <path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#uk-flag-tb)" stroke="#C8102E" stroke-width="4"/>
-                <path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/>
-                <path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"/>
-              </svg>
-            </button>
-          </div>
 
           <!-- Přepínač motivu (System / Light / Dark) — na mobilu je v drawer patičce -->
           <div class="hidden sm:inline-flex">
@@ -559,7 +508,7 @@ onMounted(async () => {
         :class="[
           'fixed lg:sticky top-14 z-30 lg:z-auto',
           'h-[calc(100vh-3.5rem)] w-60 shrink-0',
-          'bg-surface border-r border-neutral-200',
+          'app-sidebar border-r',
           'flex flex-col',
           'transition-transform duration-200 ease-in-out',
           mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
@@ -567,14 +516,13 @@ onMounted(async () => {
       >
         <nav class="flex-1 overflow-y-auto scrollbar-slim px-2.5 py-3">
           <!-- Globální vyhledávač (před Přehled) — našeptává menu + hledá klienty/faktury -->
-          <GlobalSearch :menu-items="flatNavItems" @navigated="mobileOpen = false" />
+          <GlobalSearch class="app-sidebar__search" :menu-items="flatNavItems" @navigated="mobileOpen = false" />
 
           <template v-for="(section, si) in navSections" :key="si">
             <!-- Section title — soft pill background v barvě sekce -->
             <div v-if="section.title" :class="si === 0 ? 'pt-1 pb-1.5' : 'pt-4 pb-1.5'">
               <div
-                class="inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider"
-                :class="section.accent ? ACCENT_CLASSES[section.accent] : 'bg-neutral-100 text-neutral-600'"
+                class="app-sidebar__section inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider"
               >{{ section.title }}</div>
             </div>
 
@@ -585,7 +533,7 @@ onMounted(async () => {
                 :href="item.to"
                 target="_blank"
                 rel="noopener"
-                class="flex items-center gap-2.5 px-2.5 py-[7px] rounded-md text-sm transition-colors leading-tight text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100"
+                class="app-sidebar__item flex items-center gap-2.5 px-2.5 py-[7px] rounded-md text-sm transition-colors leading-tight"
               >
                 <svg class="w-[15px] h-[15px] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round" :d="item.icon" />
@@ -600,11 +548,9 @@ onMounted(async () => {
                   :to="item.to"
                   active-class=""
                   exact-active-class=""
-                  class="flex items-center gap-2.5 px-2.5 py-[7px] rounded-md text-sm transition-colors leading-tight"
+                  class="app-sidebar__item flex items-center gap-2.5 px-2.5 py-[7px] rounded-md text-sm transition-colors leading-tight"
                   :class="[
-                    isActive(item)
-                      ? 'bg-primary-50 text-primary-700 font-medium'
-                      : 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100',
+                    isActive(item) ? 'app-sidebar__item--active font-medium' : '',
                     item.newTo && auth.canWrite ? 'pr-8' : '',
                   ]"
                 >
@@ -619,7 +565,7 @@ onMounted(async () => {
                   :to="item.newTo"
                   :title="t('nav.quick_new')"
                   :aria-label="t('nav.quick_new')"
-                  class="absolute right-1.5 top-1/2 -translate-y-1/2 inline-flex items-center justify-center w-5 h-5 rounded-md text-neutral-400 hover:text-primary-700 hover:bg-primary-100 transition-all opacity-100 lg:opacity-0 lg:group-hover:opacity-100 focus:opacity-100"
+                  class="app-sidebar__quick absolute right-1.5 top-1/2 -translate-y-1/2 inline-flex items-center justify-center w-5 h-5 rounded-md transition-all opacity-100 lg:opacity-0 lg:group-hover:opacity-100 focus:opacity-100"
                 >
                   <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v8m4-4H8M6 4h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" />
@@ -631,7 +577,7 @@ onMounted(async () => {
         </nav>
 
         <!-- Verze + odkaz na projekt (dole) -->
-        <div v-if="versionInfo" class="px-4 py-2.5 border-t border-neutral-100 flex items-center gap-2">
+        <div v-if="versionInfo" class="app-sidebar__footer px-4 py-2.5 border-t flex items-center gap-2">
           <a href="https://myinvoice.cz/" target="_blank" rel="noopener"
              class="text-xs text-neutral-500 hover:text-primary-700 hover:underline transition-colors"
              title="MyInvoice.cz">MyInvoice.cz</a>
@@ -676,36 +622,6 @@ onMounted(async () => {
                 <path stroke-linecap="round" stroke-linejoin="round" :d="ICONS.help" />
               </svg>
             </a>
-          </div>
-          <div class="flex items-center justify-between gap-2">
-            <!-- Přepínač motivu (System / Light / Dark) — mobilní varianta -->
-            <div class="inline-flex items-center border border-neutral-200 bg-surface rounded-md overflow-hidden">
-              <button
-                @click="setLocale('cs')" title="Čeština"
-                class="cursor-pointer h-9 px-3 inline-flex items-center"
-                :class="locale === 'cs' ? 'bg-primary-50' : 'hover:bg-neutral-50 grayscale opacity-60'"
-              >
-                <svg width="22" height="15" viewBox="0 0 6 4" xmlns="http://www.w3.org/2000/svg">
-                  <rect width="6" height="2" fill="#ffffff"/>
-                  <rect y="2" width="6" height="2" fill="#d7141a"/>
-                  <polygon points="0,0 3,2 0,4" fill="#11457e"/>
-                </svg>
-              </button>
-              <button
-                @click="setLocale('en')" title="English"
-                class="cursor-pointer h-9 px-3 inline-flex items-center border-l border-neutral-200"
-                :class="locale === 'en' ? 'bg-primary-50' : 'hover:bg-neutral-50 grayscale opacity-60'"
-              >
-                <svg width="22" height="15" viewBox="0 0 60 30" xmlns="http://www.w3.org/2000/svg">
-                  <clipPath id="uk-flag-mob"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath>
-                  <path d="M0,0 v30 h60 v-30 z" fill="#012169"/>
-                  <path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/>
-                  <path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#uk-flag-mob)" stroke="#C8102E" stroke-width="4"/>
-                  <path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/>
-                  <path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"/>
-                </svg>
-              </button>
-            </div>
           </div>
           <div class="grid gap-2" :class="canLockSession ? 'grid-cols-2' : 'grid-cols-1'">
             <button
