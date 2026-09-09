@@ -857,11 +857,11 @@ final class Mailer
                 }
                 if (!empty($row['branding_profile_id'])) {
                     $row['email_branding_enabled'] = (bool) $row['bp_branding_enabled'];
-                    $row['email_accent_color'] = (string) ($row['bp_accent_color'] ?: '#3B2D83');
+                    $row['email_accent_color'] = (string) ($row['bp_accent_color'] ?: '#123D75');
                     $row['email_profile_id'] = $row['bp_email_profile_id'] !== null ? (int) $row['bp_email_profile_id'] : null;
                 }
                 $row['email_branding_enabled'] = (bool) ($row['email_branding_enabled'] ?? false);
-                $row['email_accent_color']     = (string) ($row['email_accent_color'] ?: '#3B2D83');
+                $row['email_accent_color']     = (string) ($row['email_accent_color'] ?: '#123D75');
                 $row['accent_soft']            = AccentColor::emailBackground(
                     (bool) $row['email_branding_enabled'],
                     $row['email_accent_color'],

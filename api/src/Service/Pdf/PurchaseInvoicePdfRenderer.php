@@ -223,13 +223,13 @@ final class PurchaseInvoicePdfRenderer
     display: block;
     font-size: 10pt;
     font-weight: 500;
-    color: #15131D;
+    color: #07162B;
 }
 .note-above, .note-below {
     margin: 3mm 0;
     padding: 3mm 4mm;
     background: #F9FAFB;
-    border-left: 2pt solid #3B2D83;
+    border-left: 2pt solid #123D75;
     font-size: 9pt;
 }
 .rc-note {

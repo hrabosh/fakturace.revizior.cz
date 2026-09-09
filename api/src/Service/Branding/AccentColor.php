@@ -11,13 +11,13 @@ namespace MyInvoice\Service\Branding;
  *
  * Branding přebarvuje nejen popředí (texty, hlavičky), ale i světlé plochy a
  * tenké linky, které jsou v base stylu napevno odvozené od defaultní fialové
- * (#3B2D83). `tint()` je smíchá s bílou v daném poměru, aby odpovídaly
+ * (#123D75). `tint()` je smíchá s bílou v daném poměru, aby odpovídaly
  * zvolenému akcentu.
  */
 final class AccentColor
 {
     /** Defaultní MyInvoice fialová — pro ni branding negeneruje override (je už v base). */
-    public const DEFAULT = '#3B2D83';
+    public const DEFAULT = '#123D75';
 
     /** Normalizuje a zvaliduje hex; vrací uppercase `#RRGGBB` nebo null. */
     public static function normalize(?string $hex): ?string
@@ -50,7 +50,7 @@ final class AccentColor
     /**
      * Světlá varianta akcentu pro pozadí emailu (gradient hlavičky + boxy s částkou).
      * Vrací tint jen pro zapnutý branding s nedefaultní validní barvou — jinak null,
-     * aby šablona spadla zpět na fixní #F4F2FB. Gating sjednocen pro všechny buildery.
+     * aby šablona spadla zpět na fixní #EFF3F8. Gating sjednocen pro všechny buildery.
      */
     public static function emailBackground(bool $brandingEnabled, ?string $hex): ?string
     {

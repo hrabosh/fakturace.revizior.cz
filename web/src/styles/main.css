@@ -1,27 +1,28 @@
 @import "tailwindcss";
+@import "./fonts.css";
 
 /* Dark mode řízený třídou .dark na <html> (nastavuje composable useTheme přes VueUse).
    :where() drží specificitu na 0, aby utility nebyly přebity. */
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  /* ─── Primary — modř reviziORu (#1E3B8B odkazy, #07162B plochy a text) ─── */
-  --color-primary-50:  #F1F4FB;
-  --color-primary-100: #E2E8F7;
-  --color-primary-200: #C3D0EC;
-  --color-primary-300: #93A9DC;
-  --color-primary-400: #5B78C7;
-  --color-primary-500: #2B4CA8;   /* lehce světlejší — main interactive, logo */
-  --color-primary-600: #1E3B8B;   /* primary button — odkazová modř dashboardu */
-  --color-primary-700: #16357A;   /* BRAND (deep) — accents, faktura hlavička */
-  --color-primary-800: #0F2A5C;
-  --color-primary-900: #07162B;   /* BRAND základ — navy ploch a textu reviziORu */
+  /* ─── Primary — navy reviziORu (#07162B plochy a text, #123D75 značka) ─── */
+  --color-primary-50:  #EFF3F8;
+  --color-primary-100: #DCE5F0;
+  --color-primary-200: #B9C9DF;
+  --color-primary-300: #8CA5C6;
+  --color-primary-400: #4E74A3;
+  --color-primary-500: #1B5089;
+  --color-primary-600: #123D75;   /* primary button — modř značky reviziORu */
+  --color-primary-700: #0C2A52;   /* hover a hlavička faktury */
+  --color-primary-800: #09203E;
+  --color-primary-900: #07162B;   /* BRAND základ — navy ploch a textu */
 
-  /* ─── Neutral — slate, tatáž šedá jako v reviziORu (#94A3B8, #64748B) ─── */
-  --color-neutral-50:  #F8FAFC;   /* page background */
-  --color-neutral-100: #F1F5F9;   /* subtle tint */
-  --color-neutral-200: #E2E8F0;   /* borders */
-  --color-neutral-300: #CBD5E1;
+  /* ─── Neutral — teplá škála reviziORu (pozadí #F5F0E8, text #07162B) ─── */
+  --color-neutral-50:  #F5F0E8;   /* page background — krémová jako v aplikaci */
+  --color-neutral-100: #EFE8DC;   /* subtle tint */
+  --color-neutral-200: #E3DACB;   /* borders */
+  --color-neutral-300: #CBBFAC;
   --color-neutral-400: #94A3B8;
   --color-neutral-500: #64748B;
   --color-neutral-600: #475569;
@@ -31,6 +32,12 @@
 
   /* ─── Surfaces (hodnoty přepínané v .dark) ─── */
   --color-surface:   #FFFFFF;   /* karty, panely, modály, topbar, sidebar (light = bílá) */
+
+  /* ─── Gold — druhá barva značky reviziORu (aktivní prvky, zvýraznění) ─── */
+  --color-gold-50:   #FCF6E8;
+  --color-gold-100:  #F0E4C8;
+  --color-gold-500:  #E2A91A;   /* zlatá ze značky */
+  --color-gold-600:  #D9B24B;   /* zlatá tlačítek a zvýraznění v aplikaci */
 
   /* ─── Accent — pastel sky blue ─── */
   --color-accent-50:   #EFF6FC;
@@ -69,7 +76,7 @@
   --color-status-cancelled-bg: #F1F5F9;
   --color-status-cancelled-fg: #94A3B8;
 
-  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-sans: "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-mono: "Geist Mono", ui-monospace, "SF Mono", Consolas, monospace;
 
   --radius-sm: 4px;

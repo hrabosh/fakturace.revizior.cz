@@ -394,7 +394,7 @@ final class EmailProfilesAction
 
         $row['id'] = (int) $row['id'];
         $row['email_branding_enabled'] = (int) ($row['email_branding_enabled'] ?? 0) === 1;
-        $row['email_accent_color'] = (string) ($row['email_accent_color'] ?: '#3B2D83');
+        $row['email_accent_color'] = (string) ($row['email_accent_color'] ?: '#123D75');
         $row['accent_soft'] = AccentColor::emailBackground(
             (bool) $row['email_branding_enabled'],
             $row['email_accent_color'],

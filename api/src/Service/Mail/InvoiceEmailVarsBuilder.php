@@ -245,7 +245,7 @@ final class InvoiceEmailVarsBuilder
                     'email_footer' => $snap['email_footer'] ?? null,
                     'branding_profile_id' => $snap['branding_profile_id'] ?? null,
                     'email_branding_enabled' => (bool) ($snap['email_branding_enabled'] ?? false),
-                    'email_accent_color' => $snap['email_accent_color'] ?? '#3B2D83',
+                    'email_accent_color' => $snap['email_accent_color'] ?? '#123D75',
                     'logo_path' => $snap['logo_path'] ?? null,
                     'email_profile_id' => $snap['email_profile_id'] ?? null,
                 ];
@@ -288,7 +288,7 @@ final class InvoiceEmailVarsBuilder
 
                 if ($legacy !== false) {
                     $row['email_branding_enabled'] = (bool) $legacy['email_branding_enabled'];
-                    $row['email_accent_color'] = (string) ($legacy['email_accent_color'] ?: '#3B2D83');
+                    $row['email_accent_color'] = (string) ($legacy['email_accent_color'] ?: '#123D75');
                     $row['logo_path'] = $legacy['logo_path'] ?: null;
                 }
 
@@ -308,7 +308,7 @@ final class InvoiceEmailVarsBuilder
                 }
             }
             $row['email_branding_enabled'] = (bool) ($row['email_branding_enabled'] ?? false);
-            $row['email_accent_color'] = (string) ($row['email_accent_color'] ?? '#3B2D83');
+            $row['email_accent_color'] = (string) ($row['email_accent_color'] ?? '#123D75');
             $row['accent_soft'] = AccentColor::emailBackground($row['email_branding_enabled'], $row['email_accent_color']);
         }
 

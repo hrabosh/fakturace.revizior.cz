@@ -1,7 +1,7 @@
 {% extends '_layout.html.twig' %}
 
 {% block content %}
-<h1 style="margin:0 0 16px;font-size:22px;font-weight:600;color:#15131D;">
+<h1 style="margin:0 0 16px;font-size:22px;font-weight:600;color:#07162B;">
   {% if is_test %}<span style="color:#E8A547;">[TEST] </span>{% endif %}{% if is_reminder %}<span style="color:#E8A547;">Reminder</span> — {% endif %}Hello,
 </h1>
 
@@ -24,7 +24,7 @@
         {% if work_report %}
         <tr>
           <td style="padding:4px 0;color:#7A748C;width:42%;">Report</td>
-          <td style="padding:4px 0;font-weight:600;color:#15131D;">{{ work_report.title }}</td>
+          <td style="padding:4px 0;font-weight:600;color:#07162B;">{{ work_report.title }}</td>
         </tr>
         {% if work_report.total_hours > 0 %}
         <tr>

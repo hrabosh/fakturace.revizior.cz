@@ -18,7 +18,7 @@ final class BrandingProfileOverlay
         $supplier['reply_to'] = $profile['reply_to'] ?: null;
         $supplier['email_profile_id'] = $profile['email_profile_id'] !== null ? (int) $profile['email_profile_id'] : null;
         $supplier['email_branding_enabled'] = (bool) ($profile['branding_enabled'] ?? true);
-        $supplier['email_accent_color'] = (string) ($profile['accent_color'] ?: '#3B2D83');
+        $supplier['email_accent_color'] = (string) ($profile['accent_color'] ?: '#123D75');
         $supplier['pdf_logo_show_name'] = (bool) ($profile['pdf_logo_show_name'] ?? true);
         return $supplier;
     }

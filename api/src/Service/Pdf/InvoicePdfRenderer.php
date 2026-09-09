@@ -355,13 +355,13 @@ final class InvoicePdfRenderer
     }
 
     /**
-     * Per-supplier branding accent — přebarví fialové akcenty PDF (#3B2D83 + sekundární
-     * labely #6753AE) na barvu zvolenou dodavatelem (`email_accent_color`). Vrací override
+     * Per-supplier branding accent — přebarví fialové akcenty PDF (#123D75 + sekundární
+     * labely #1B5089) na barvu zvolenou dodavatelem (`email_accent_color`). Vrací override
      * CSS blok připojovaný ZA base invoice.css (vyšší priorita díky pořadí + stejná
      * specificita).
      *
      * Gating stejný jako logo: jen když má dodavatel zapnutý branding toggle
-     * (`email_branding_enabled`) a nedefaultní hex barvu — pro #3B2D83 negenerujeme nic,
+     * (`email_branding_enabled`) a nedefaultní hex barvu — pro #123D75 negenerujeme nic,
      * ten je už v base CSS.
      *
      * Sémantické barvy (dobropis červená .head.credit-note, storno šedá .cancellation,

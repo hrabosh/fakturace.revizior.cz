@@ -1,15 +1,19 @@
 {
   "id": "/",
-  "name": "MyInvoice.cz",
-  "short_name": "MyInvoice",
-  "description": "Self-hosted fakturační a účetní systém",
+  "name": "reviziOR Fakturace",
+  "short_name": "Fakturace",
+  "description": "Fakturace pro revizní techniky — součást reviziORu",
   "lang": "cs",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#f5f5f5",
-  "theme_color": "#3B2D83",
-  "categories": ["business", "finance", "productivity"],
+  "background_color": "#F5F0E8",
+  "theme_color": "#07162B",
+  "categories": [
+    "business",
+    "finance",
+    "productivity"
+  ],
   "icons": [
     {
       "src": "/pwa/icon-192.png",

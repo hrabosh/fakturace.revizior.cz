@@ -190,7 +190,7 @@ final class EmailBrandingAction
             'phone'                  => $row['phone'] ?: null,
             'web'                    => $row['web'] ?: null,
             'email_branding_enabled' => (bool) $row['email_branding_enabled'],
-            'email_accent_color'     => (string) ($row['email_accent_color'] ?: '#3B2D83'),
+            'email_accent_color'     => (string) ($row['email_accent_color'] ?: '#123D75'),
             'logo_path'              => $row['logo_path'] ?: null,
             'email_footer'           => null,
         ];
