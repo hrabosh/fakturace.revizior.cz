@@ -1,30 +1,29 @@
 import { computed, watchEffect } from 'vue'
-import { useStorage, usePreferredDark } from '@vueuse/core'
 
 /**
- * Barevný režim aplikace: System / Light / Dark.
+ * Barevný režim aplikace.
  *
- * Why: `auto` respektuje OS (prefers-color-scheme), `light`/`dark` ho přebijí.
- * Volba se ukládá do localStorage (klíč musí sedět s anti-FOUC scriptem v index.html).
- * Reaktivně přepíná třídu `.dark` na <html>, na kterou je navázán dark scope v main.css.
+ * **Fakturace jede jen ve světlém režimu.** Je to jeden produkt s reviziORem
+ * a ten tmavý režim nemá; nabízet ho tady znamenalo, že uživatel s tmavým OS
+ * viděl jinou aplikaci než ve zbytku systému.
  *
- * Stav je modul-level singleton, takže všechny komponenty sdílejí jednu instanci
- * a watchEffect běží jen jednou.
+ * Tokeny `.dark` v `styles/main.css` zůstávají — jsou v barvách reviziORu
+ * a čekají na chvíli, kdy tmavý režim dostane i hlavní aplikace. Do té doby
+ * se třída `.dark` nikdy nenasazuje a přepínač se nezobrazuje.
+ *
+ * `preference` a `isDark` zůstávají v API kvůli grafům, které si barvy zrcadlí
+ * ručně (chart.js nečte CSS proměnné).
  */
 export type ThemePreference = 'auto' | 'light' | 'dark'
 
 export const THEME_STORAGE_KEY = 'myinvoice-color-scheme'
 
-const preference = useStorage<ThemePreference>(THEME_STORAGE_KEY, 'auto')
-const prefersDark = usePreferredDark()
-
-/** Co reálně svítí (auto → podle systému). */
-const isDark = computed(
-  () => preference.value === 'dark' || (preference.value === 'auto' && prefersDark.value),
-)
+const preference = computed<ThemePreference>(() => 'light')
+const isDark = computed(() => false)
 
 watchEffect(() => {
-  document.documentElement.classList.toggle('dark', isDark.value)
+  // Uklidí třídu i uživatelům, kteří si dřív tmavý režim zapnuli.
+  document.documentElement.classList.remove('dark')
 })
 
 export function useTheme() {

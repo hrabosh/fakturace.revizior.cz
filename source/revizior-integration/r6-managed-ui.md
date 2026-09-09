@@ -128,3 +128,21 @@ jsou natvrdo zapsané hodnoty, které se s tokeny nesynchronizují samy.
 
 Fialová zůstává jen tam, kde nese význam (badge „Přeplaceno"), ne jako barva
 značky.
+
+### Jen světlý režim
+
+Přepínač System / Light / Dark je pryč a `.dark` se nikdy nenasazuje
+(2026-09-09). Důvod je ten samý jako u palety: fakturace a reviziOR mají působit
+jako jeden produkt, a hlavní aplikace tmavý režim nemá. Uživatel s tmavým OS
+tak viděl v jedné polovině produktu něco jiného než v druhé.
+
+Vypnuto na třech místech, protože každé samo o sobě umí `.dark` nasadit:
+
+- `composables/useTheme.ts` — `isDark` je natvrdo `false` a effect třídu
+  odstraňuje i těm, kdo si ji dřív uložili do `localStorage`;
+- anti-FOUC script v `web/index.html` — sahal na `prefers-color-scheme` ještě
+  před načtením aplikace;
+- `ThemeToggle` v `AppLayout` (dva výskyty — desktop a mobil).
+
+Tokeny `.dark` v `styles/main.css` **zůstávají** a jsou v barvách reviziORu:
+až tmavý režim dostane hlavní aplikace, zapne se to zpátky bez dalšího ladění.
