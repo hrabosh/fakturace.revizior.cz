@@ -1,24 +1,18 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { publicWorkReportApi, type WrPublicState, type WrPreview } from '@/api/workReportTracking'
 import { useTurnstile } from '@/composables/useTurnstile'
-import { useTheme } from '@/composables/useTheme'
 
 const route = useRoute()
 const token = computed(() => String(route.params.token || ''))
 const { t, locale } = useI18n()
 
-// Veřejný náhled vždy ve světlém režimu — sjednoceno s e-mailem, ze kterého se
-// sem klient prokliká: logo i akcentní barva dodavatele jsou laděné na světlé
-// pozadí (tmavé logo na tmavém pozadí by bylo nečitelné). Děláme to v setupu
-// (před prvním paintem této routy), režim uživatele obnovíme při odchodu.
-const { isDark } = useTheme()
+// Aplikace jede jen ve světlém režimu (viz composables/useTheme), takže tady
+// není co přepínat. Zůstává jen úklid třídy pro prohlížeče, které si `.dark`
+// nesou z dřívějška — logo a akcent dodavatele jsou laděné na světlé pozadí.
 document.documentElement.classList.remove('dark')
-onBeforeUnmount(() => {
-  document.documentElement.classList.toggle('dark', isDark.value)
-})
 
 const loading = ref(true)
 const loadError = ref('')

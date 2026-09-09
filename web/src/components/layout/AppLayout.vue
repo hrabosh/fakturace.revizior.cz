@@ -8,7 +8,6 @@ import { updateApi, type PublicVersion } from '@/api/update'
 import { settingsApi } from '@/api/settings'
 import SupplierSwitcher from './SupplierSwitcher.vue'
 import GlobalSearch from './GlobalSearch.vue'
-import ThemeToggle from './ThemeToggle.vue'
 import { useSessionSecurityStore } from '@/stores/sessionSecurity'
 import { useToast } from '@/composables/useToast'
 import type { DeploymentModule } from '@/api/auth'
@@ -488,7 +487,6 @@ onMounted(async () => {
 
           <!-- Přepínač motivu (System / Light / Dark) — na mobilu je v drawer patičce -->
           <div class="hidden sm:inline-flex">
-            <ThemeToggle />
           </div>
 
           <!-- Nápověda -->
@@ -681,7 +679,6 @@ onMounted(async () => {
           </div>
           <div class="flex items-center justify-between gap-2">
             <!-- Přepínač motivu (System / Light / Dark) — mobilní varianta -->
-            <ThemeToggle />
             <div class="inline-flex items-center border border-neutral-200 bg-surface rounded-md overflow-hidden">
               <button
                 @click="setLocale('cs')" title="Čeština"

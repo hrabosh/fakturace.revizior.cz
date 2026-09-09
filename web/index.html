@@ -11,18 +11,6 @@
     <meta name="apple-mobile-web-app-title" content="Fakturace" />
     <meta name="robots" content="noindex, nofollow" />
     <title>reviziOR Fakturace</title>
-    <script>
-      // Anti-FOUC: nastav .dark ještě před načtením appky, ať dark režim nebliká.
-      // Klíč musí sedět s composables/useTheme.ts (THEME_STORAGE_KEY).
-      (function () {
-        try {
-          var p = (localStorage.getItem('myinvoice-color-scheme') || 'auto').replace(/^"|"$/g, '');
-          if (p === 'dark' || (p !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-          }
-        } catch (e) {}
-      })();
-    </script>
   </head>
   <body>
     <div id="app"></div>

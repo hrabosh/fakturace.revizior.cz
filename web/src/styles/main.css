@@ -97,28 +97,32 @@
      vykreslit tmavě — jinak je kalendář černý na tmavém a špatně vidět. */
   color-scheme: dark;
 
-  /* Neutral — invertovaná, teplá indigo tmavá */
-  --color-neutral-50:  #14121C;   /* page background */
-  --color-neutral-100: #1C1A28;   /* subtle tint / hover */
-  --color-neutral-200: #2C2840;   /* borders */
-  --color-neutral-300: #3B3656;
-  --color-neutral-400: #6B6488;   /* velmi tlumené/disabled — mírně zesvětleno */
-  --color-neutral-500: #968FAD;   /* muted text (popisky/placeholdery) — ~4.3 → ~5.5:1 (AA) */
-  --color-neutral-600: #A8A1BE;   /* sekundární text */
-  --color-neutral-700: #C6C0DA;
-  --color-neutral-800: #E2DEEC;
-  --color-neutral-900: #F3F1F9;   /* hlavní text */
+  /* Neutral — invertovaná navy reviziORu (#07162B jako pozadí) */
+  --color-neutral-50:  #07162B;   /* page background */
+  --color-neutral-100: #0C1F38;   /* subtle tint / hover */
+  --color-neutral-200: #16304C;   /* borders */
+  --color-neutral-300: #1F4066;
+  --color-neutral-400: #5A7796;   /* velmi tlumené/disabled */
+  --color-neutral-500: #8AA3BC;   /* muted text (popisky/placeholdery) — ~7:1 (AA) */
+  --color-neutral-600: #A8BDD2;   /* sekundární text */
+  --color-neutral-700: #C6D6E5;
+  --color-neutral-800: #E2EAF2;
+  --color-neutral-900: #F5F0E8;   /* hlavní text — krémová jako pozadí light módu */
 
   /* Plochy nad pozadím */
-  --color-surface:   #1E1B2B;   /* karty / panely / topbar / sidebar */
+  --color-surface:   #0E2138;   /* karty / panely / topbar / sidebar */
 
-  /* Primary — zesvětlené pro kontrast a sytost na tmavém podkladu */
-  --color-primary-50:  #221C3A;   /* soft pill bg (bg-primary-50) */
-  --color-primary-100: #2C2450;
-  --color-primary-600: #7C68C4;   /* primary button */
-  --color-primary-700: #9C8FDA;   /* accent text (text-primary-700) — čitelný na tmavém */
-  --color-primary-800: #B7AAE8;   /* silnější accent text (text-primary-800) */
-  --color-primary-900: #D4CCF3;   /* nejsilnější accent text (text-primary-900) */
+  /* Primary — modř značky zesvětlená, aby držela kontrast na tmavém podkladu */
+  --color-primary-50:  #12294A;   /* soft pill bg (bg-primary-50) */
+  --color-primary-100: #17355E;
+  --color-primary-600: #3D7ABF;   /* primary button — s bílým textem ~4,6:1 */
+  --color-primary-700: #7FAEE0;   /* accent text (text-primary-700) */
+  --color-primary-800: #A6C8EC;   /* silnější accent text (text-primary-800) */
+  --color-primary-900: #CBE0F6;   /* nejsilnější accent text (text-primary-900) */
+
+  /* Zlatá značky — na tmavém podkladu světlejší odstín z aplikace */
+  --color-gold-500:  #E8CB7C;
+  --color-gold-600:  #D9B24B;
 
   /* Semantic soft pozadí (-50) → tmavé tinty */
   --color-success-50: #16261D;
@@ -140,7 +144,7 @@
   --color-amber-50:   #2B2113;
   --color-amber-600:  #D99C3F;
   --color-amber-700:  #E2AE5C;
-  --color-purple-50:  #241A33;
+  --color-purple-50:  #22203A;
   --color-purple-700: #C2A6EC;
 }
 

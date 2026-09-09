@@ -1,30 +1,29 @@
 import { computed, watchEffect } from 'vue'
-import { useStorage, usePreferredDark } from '@vueuse/core'
 
 /**
- * Barevný režim aplikace: System / Light / Dark.
+ * Barevný režim aplikace.
  *
- * Why: `auto` respektuje OS (prefers-color-scheme), `light`/`dark` ho přebijí.
- * Volba se ukládá do localStorage (klíč musí sedět s anti-FOUC scriptem v index.html).
- * Reaktivně přepíná třídu `.dark` na <html>, na kterou je navázán dark scope v main.css.
+ * **Fakturace jede jen ve světlém režimu.** Je to jeden produkt s reviziORem
+ * a ten tmavý režim nemá; nabízet ho tady znamenalo, že uživatel s tmavým OS
+ * viděl jinou aplikaci než ve zbytku systému.
  *
- * Stav je modul-level singleton, takže všechny komponenty sdílejí jednu instanci
- * a watchEffect běží jen jednou.
+ * Tokeny `.dark` v `styles/main.css` zůstávají — jsou v barvách reviziORu
+ * a čekají na chvíli, kdy tmavý režim dostane i hlavní aplikace. Do té doby
+ * se třída `.dark` nikdy nenasazuje a přepínač se nezobrazuje.
+ *
+ * `preference` a `isDark` zůstávají v API kvůli grafům, které si barvy zrcadlí
+ * ručně (chart.js nečte CSS proměnné).
  */
 export type ThemePreference = 'auto' | 'light' | 'dark'
 
 export const THEME_STORAGE_KEY = 'myinvoice-color-scheme'
 
-const preference = useStorage<ThemePreference>(THEME_STORAGE_KEY, 'auto')
-const prefersDark = usePreferredDark()
-
-/** Co reálně svítí (auto → podle systému). */
-const isDark = computed(
-  () => preference.value === 'dark' || (preference.value === 'auto' && prefersDark.value),
-)
+const preference = computed<ThemePreference>(() => 'light')
+const isDark = computed(() => false)
 
 watchEffect(() => {
-  document.documentElement.classList.toggle('dark', isDark.value)
+  // Uklidí třídu i uživatelům, kteří si dřív tmavý režim zapnuli.
+  document.documentElement.classList.remove('dark')
 })
 
 export function useTheme() {
@@ -38,13 +37,13 @@ export function useTheme() {
  */
 // Kategorická paleta pro grafy (rozlišení kategorií, ne sémantika). V dark posunutá do
 // světlejších indigo tónů, aby nejtmavší segmenty nesplývaly s tmavým pozadím.
-const CHART_PALETTE_LIGHT = ['#16357A', '#1E3B8B', '#2B4CA8', '#5B78C7', '#93A9DC', '#C3D0EC', '#E2E8F7', '#F4A261', '#E8A547', '#4CAF7A']
-const CHART_PALETTE_DARK = ['#93A9DC', '#7C68C4', '#C3D0EC', '#8B79C8', '#E2E8F7', '#2B4CA8', '#D8CEF0', '#F4A261', '#E8A547', '#5FBF8E']
+const CHART_PALETTE_LIGHT = ['#0C2A52', '#123D75', '#1B5089', '#4E74A3', '#8CA5C6', '#B9C9DF', '#DCE5F0', '#E2A91A', '#D9B24B', '#4CAF7A']
+const CHART_PALETTE_DARK = ['#7FAEE0', '#3D7ABF', '#A6C8EC', '#5B93CE', '#CBE0F6', '#1B5089', '#E2A91A', '#F4A261', '#E8CB7C', '#5FBF8E']
 
 const chartColors = computed(() =>
   isDark.value
-    ? { border: '#1E1B2B', tick: '#A8A1BE', grid: '#2C2840', tooltipBg: '#322C4A', primary: '#7C68C4', primarySoft: '#93A9DC', palette: CHART_PALETTE_DARK }
-    : { border: '#FFFFFF', tick: '#5A5470', grid: '#E7E3EE', tooltipBg: '#07162B', primary: '#1E3B8B', primarySoft: '#93A9DC', palette: CHART_PALETTE_LIGHT },
+    ? { border: '#0E2138', tick: '#A8BDD2', grid: '#16304C', tooltipBg: '#16304C', primary: '#3D7ABF', primarySoft: '#7FAEE0', palette: CHART_PALETTE_DARK }
+    : { border: '#FFFFFF', tick: '#475569', grid: '#E3DACB', tooltipBg: '#07162B', primary: '#123D75', primarySoft: '#8CA5C6', palette: CHART_PALETTE_LIGHT },
 )
 
 export function useChartColors() {
