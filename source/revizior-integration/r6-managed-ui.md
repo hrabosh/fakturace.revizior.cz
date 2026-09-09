@@ -113,3 +113,18 @@ cizího produktu. Layout ani struktura šablon se nemění.
 Layout zůstal, jak byl: fakturace má horní lištu, reviziOR svislé menu.
 Přestavba by byla velký zásah s malým přínosem — vjem „jeden produkt" nese
 barva, font a značka.
+
+### Tmavý režim se musí přebarvit taky
+
+Paleta žije ve dvou sadách: světlé tokeny a jejich override ve `.dark`. Režim
+`auto` sleduje nastavení systému, takže uživatel s tmavým OS vidí **jen** tu
+druhou sadu — po přebarvení světlé palety pro něj bylo všechno beze změny
+(2026-09-09).
+
+Tmavá varianta teď staví na navy `#07162B` jako pozadí, krémovém textu
+`#F5F0E8` a zesvětlené modři značky `#3D7ABF` (s bílým textem ~4,6:1). Stejnou
+past mají grafy: `CHART_PALETTE_LIGHT` i `CHART_PALETTE_DARK` v `useTheme.ts`
+jsou natvrdo zapsané hodnoty, které se s tokeny nesynchronizují samy.
+
+Fialová zůstává jen tam, kde nese význam (badge „Přeplaceno"), ne jako barva
+značky.
