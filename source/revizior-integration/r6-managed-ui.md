@@ -190,3 +190,18 @@ třídou má zůstat odznakem. Pravidla stojí — stejně jako chrom — **mimo
 
 Do lišty přibyl zlatý monogram uživatele, tatáž dvojice jméno + kolečko jako
 v reviziORu.
+
+### Tabulky a lišta doladěné podle reviziORu (2026-09-10)
+
+První kolo dalo tabulkám prostor, ale hlavička pořád splývala s prvním řádkem:
+reviziOR ji odděluje pruhem (`bg-gray-50` na bílé kartě), fakturace měla
+hlavičku bílou jako řádky. Doplněno `table thead` s teplým ekvivalentem
+(`neutral-100`), velikost a prostrkání písma hlavičky, odezva řádku na kurzor.
+
+Karty mají 12px rádius jako v reviziORu. Pravidlo cílí na kombinaci
+`rounded-lg` **s rámečkem**, aby se nezaoblily i vstupy a tlačítka se stejnou
+třídou.
+
+V liště zmizely rámečky sekundárních tlačítek — tři orámovaná tlačítka vedle
+sebe z ní dělala ovládací panel, kdežto reviziOR má v liště jen text a ikony.
+Odsazení na širokých displejích je `lg:px-6`, stejné jako tam.

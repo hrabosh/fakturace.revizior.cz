@@ -232,12 +232,38 @@
  * utility v šablonách (`px-2 py-2`, `text-white`). Šablony se tím nemusí
  * přepisovat na 100 místech.
  */
+/* Hlavička dostane vlastní pruh, jinak splyne s prvním řádkem — v reviziORu
+   ho dělá `bg-gray-50` na bílé kartě, tady teplý ekvivalent. */
+table thead {
+  background: var(--color-neutral-100);
+}
+
 table thead th {
   padding-top: 0.7rem;
   padding-bottom: 0.7rem;
   font-weight: 500;
+  font-size: 0.75rem;
   letter-spacing: 0.04em;
+  text-transform: uppercase;
   color: var(--color-neutral-500);
+}
+
+/* Řádek pod kurzorem — táž odezva jako v seznamech reviziORu. */
+table tbody tr:hover {
+  background: rgba(7, 22, 43, 0.025);
+}
+
+/* Karty a panely mají v reviziORu 12px rádius; `rounded-lg` (8px) vedle nich
+   působilo ostřeji. Cílíme na kombinaci s rámečkem, aby se nezaoblily
+   i vstupy a tlačítka se stejnou třídou. */
+.rounded-lg.border.border-neutral-200,
+.rounded-b-lg.border.border-neutral-200 {
+  border-radius: 0.75rem;
+}
+
+.rounded-b-lg.border.border-neutral-200 {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 }
 
 table tbody td {
