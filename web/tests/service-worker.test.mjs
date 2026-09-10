@@ -105,11 +105,18 @@ test('HTML navigation stays on the network without service-worker caching', () =
 })
 
 test('activation drops stale MyInvoice caches only', async () => {
+  // Verze cache se bumpuje (v1 → v2 při ladění zaseklé statiky), takže se
+  // čte ze zdroje workeru. Natvrdo zapsaná verze shodila CI při každém bumpu
+  // a přitom netestovala nic navíc.
+  const current = source.match(/STATIC_CACHE_PREFIX\}(v\d+)`/)[1]
+  const stale = ['myinvoice-static-v0', 'myinvoice-static-v1', 'myinvoice-static-v2']
+    .filter((name) => name !== `myinvoice-static-${current}`)
+
   const worker = createWorker(source, {
-    existingCaches: ['myinvoice-static-v0', 'myinvoice-static-v1', 'other-app-cache'],
+    existingCaches: [...stale, `myinvoice-static-${current}`, 'other-app-cache'],
   })
 
   await worker.dispatchActivate()
 
-  assert.deepEqual(worker.deletedCaches, ['myinvoice-static-v0'])
+  assert.deepEqual(worker.deletedCaches, stale)
 })
