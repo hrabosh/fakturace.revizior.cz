@@ -377,7 +377,7 @@ onMounted(async () => {
 
     <!-- ═════════════════════ TOPBAR ═════════════════════ -->
     <header class="app-topbar sticky top-0 z-30 border-b border-neutral-200">
-      <div class="h-14 px-4 flex items-center justify-between gap-3">
+      <div class="h-14 px-4 lg:px-6 flex items-center justify-between gap-3">
         <!-- Logo -->
         <RouterLink to="/" class="flex items-center gap-2.5 shrink-0" @click="mobileOpen = false">
           <img src="/styles/logo.svg" :alt="auth.productName" class="w-8 h-8" />
@@ -466,12 +466,12 @@ onMounted(async () => {
           <button
             v-if="canLockSession"
             @click="sessionSecurity.lock"
-            class="cursor-pointer hidden sm:inline-flex px-3 h-8 items-center text-sm border border-neutral-300 rounded-md text-neutral-700 hover:bg-neutral-50"
+            class="cursor-pointer hidden sm:inline-flex px-3 h-8 items-center text-sm rounded-md text-neutral-600 hover:bg-neutral-100 hover:text-primary-700"
           >{{ t('session_lock.lock_now') }}</button>
           <button
             @click="logout"
             :disabled="logoutBusy"
-            class="cursor-pointer hidden sm:inline-flex px-3 h-8 items-center text-sm border border-neutral-300 rounded-md text-neutral-700 hover:bg-neutral-50 disabled:opacity-60"
+            class="cursor-pointer hidden sm:inline-flex px-3 h-8 items-center text-sm rounded-md text-neutral-600 hover:bg-neutral-100 hover:text-primary-700 disabled:opacity-60"
           >{{ t('nav.logout') }}</button>
 
           <!-- Hamburger (mobile, < lg) -->
