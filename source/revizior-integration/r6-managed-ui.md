@@ -173,3 +173,20 @@ Dvě pravidla, která se snadno poruší:
 Barvy chromu žijí v `styles/main.css` **mimo `@layer`** — Tailwind řadí
 `utilities` až za `components`, takže by je jinak přebily utility v šabloně.
 Šablona proto nese jen sémantické třídy (`app-sidebar__item`), ne barvy.
+
+### Obsah: tabulky a primární akce (2026-09-10)
+
+Tabulky měly hlavičku nalepenou na řádcích a primární tlačítko bylo modré
+s bílým textem, zatímco reviziOR má vzdušné řádky a jedno těžké tlačítko
+(navy plocha, zlatý text). Vedle sebe to působilo jako dva produkty.
+
+- `table thead th` a `tbody td` dostaly svislý prostor jako v reviziORu;
+- `button.bg-primary-600` / `a.bg-primary-600` se vykreslí navy + zlatě.
+
+Cílíme na `button`/`a`, ne na každou plochu s tou třídou: odznak se stejnou
+třídou má zůstat odznakem. Pravidla stojí — stejně jako chrom — **mimo
+`@layer`**, jinak by je přebily utility v šablonách (`px-2 py-2`,
+`text-white`). Šablony se tím nemusí přepisovat na 200 místech.
+
+Do lišty přibyl zlatý monogram uživatele, tatáž dvojice jméno + kolečko jako
+v reviziORu.

@@ -14,6 +14,14 @@ import type { DeploymentModule } from '@/api/auth'
 
 const { t } = useI18n()
 
+/** Monogram do lišty — z prvních písmen jména, jako v reviziORu. */
+const userInitials = computed(() => (auth.user?.name ?? '')
+  .split(/\s+/)
+  .filter(Boolean)
+  .slice(0, 2)
+  .map((part) => part[0]?.toUpperCase() ?? '')
+  .join(''))
+
 const router = useRouter()
 const route = useRoute()
 const auth = useAuthStore()
@@ -428,11 +436,15 @@ onMounted(async () => {
           <span v-if="auth.canWrite" class="hidden lg:inline-block w-px h-5 bg-neutral-200 mx-1" aria-hidden="true"></span>
 
           <!-- Jméno uživatele (desktop) — link na profil (heslo + 2FA v záložkách). -->
+          <!-- Jméno + zlatý monogram: stejná dvojice jako v liště reviziORu. -->
           <RouterLink
             to="/profile/password"
-            class="hidden lg:inline text-sm text-neutral-600 hover:text-primary-700 hover:underline"
+            class="hidden lg:inline-flex items-center gap-2 text-sm text-neutral-600 hover:text-primary-700"
             :title="t('auth.profile_title')"
-          >{{ auth.user?.name }}</RouterLink>
+          >
+            <span class="hover:underline">{{ auth.user?.name }}</span>
+            <span class="app-avatar w-7 h-7 rounded-full inline-flex items-center justify-center text-[11px] font-bold">{{ userInitials }}</span>
+          </RouterLink>
 
           <!-- Přepínač motivu (System / Light / Dark) — na mobilu je v drawer patičce -->
           <div class="hidden sm:inline-flex">

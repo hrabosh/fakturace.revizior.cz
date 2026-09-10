@@ -222,6 +222,55 @@
 
 .app-sidebar .app-sidebar__footer a:hover { color: var(--color-gold-500); }
 
+/* ═══════════════════ OBSAH: TABULKY A AKCE ═══════════════════
+ * Why: reviziOR má vzdušné tabulky s tlumenou hlavičkou a jedno těžké
+ * primární tlačítko (navy plocha, zlatý text). Fakturace měla hlavičky
+ * nalepené na řádky a modré tlačítko s bílým textem, takže vedle sebe
+ * vypadaly obě aplikace jako dva produkty.
+ *
+ * Stejně jako u chromu stojí pravidla MIMO @layer — jinak by je přebily
+ * utility v šablonách (`px-2 py-2`, `text-white`). Šablony se tím nemusí
+ * přepisovat na 100 místech.
+ */
+table thead th {
+  padding-top: 0.7rem;
+  padding-bottom: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--color-neutral-500);
+}
+
+table tbody td {
+  padding-top: 0.65rem;
+  padding-bottom: 0.65rem;
+}
+
+/* Primární akce. Cílíme na interaktivní prvky, ne na každou plochu
+   s `bg-primary-600` — odznak se stejnou třídou má zůstat odznakem. */
+button.bg-primary-600,
+a.bg-primary-600 {
+  background: var(--color-primary-900);
+  color: var(--color-gold-500);
+}
+
+button.bg-primary-600:hover,
+a.bg-primary-600:hover {
+  background: #0C2A52;
+  color: var(--color-gold-500);
+}
+
+button.bg-primary-600:disabled,
+button.bg-primary-600[disabled] {
+  background: var(--color-primary-900);
+  color: rgba(232, 203, 124, 0.55);
+}
+
+/* Monogram uživatele v liště — tatáž zlatá jako v reviziORu. */
+.app-avatar {
+  background: var(--color-gold-600);
+  color: var(--color-primary-900);
+}
+
 html, body {
   background: var(--color-neutral-50);
   color: var(--color-neutral-900);
