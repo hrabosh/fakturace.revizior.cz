@@ -183,6 +183,32 @@ databázi**, jinak si obě aplikace míchají klíče:
 Po editaci stačí `sudo systemctl reload php8.5-fpm`; `/api/health` pak vrací
 `"redis": true`.
 
+## Statika mimo `/assets/` potřebuje vlastní alias
+
+Root vhostu míří na `current/`, ale build leží v `current/web/dist/`. Každá
+cesta, která z buildu něco servíruje, proto potřebuje `alias` — jinak
+`try_files $uri /web/dist/index.html` vrátí **index.html se stavem 200**
+a prohlížeč dostane HTML tam, kde čekal soubor.
+
+Takhle to 2026-09-10 potkalo fonty: `/fonts/*.woff2` vracelo `text/html`,
+v konzoli se to hlásilo jako `OTS parsing error: invalid sfntVersion:
+1008821359` — a to číslo je v hexu `3C 21 44 4F`, tedy `<!DO`. Aplikace
+tiše psala náhradním písmem.
+
+**Kontrola stavovým kódem tuhle chybu nechytí** (fallback vrací 200). Ověřuje
+se typ obsahu:
+
+```bash
+for f in fonts/plus-jakarta-sans-latin.woff2 manifest.webmanifest \
+         service-worker.js pwa/icon-192.png; do
+  curl -s -o /dev/null -w "$f %{http_code} %{content_type}\n" \
+    "https://fakturace.revizior.cz/$f"
+done
+```
+
+Aliasy dnes mají `/assets/`, `/fonts/`, `/pwa/`, `service-worker.js`
+a `manifest.webmanifest`. Nový adresář v `web/dist/` znamená nový `location`.
+
 ## Cron
 
 Crontab uživatele `deployer`:

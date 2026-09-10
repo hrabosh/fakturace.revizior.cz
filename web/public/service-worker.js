@@ -1,5 +1,9 @@
 const STATIC_CACHE_PREFIX = 'myinvoice-static-'
-const STATIC_CACHE = `${STATIC_CACHE_PREFIX}v1`
+// v2 (2026-09-10): cache byla od začátku `v1`, takže se nikdy nevyčistila —
+// stará statika v ní ležela i po nasazení nové verze. Aktivace nového workeru
+// smaže všechno, co nese jiný sufix než aktuální; bump je tedy jediný způsob,
+// jak uživateli zaseklou statiku vyhodit bez zásahu v prohlížeči.
+const STATIC_CACHE = `${STATIC_CACHE_PREFIX}v2`
 const STATIC_DESTINATIONS = new Set(['font', 'image', 'script', 'style'])
 
 // Vite hashuje názvy souborů a ikony jsou stabilní → cache-first je bezpečné.
