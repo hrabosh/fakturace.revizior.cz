@@ -227,3 +227,17 @@ nebyla prázdná.
 
 Co zůstává jinak: filtry. reviziOR má pilulky nad seznamem, fakturace
 rozbalovací seznamy v kartě — to není barva, ale jiný způsob filtrování.
+
+### Filtry a seznamy (2026-09-11)
+
+Barvy už seděly, ale stránka byla postavená jinak. reviziOR má filtry **volně
+na plátně** a jedinou kartou na stránce je seznam; fakturace je měla v kartě,
+takže nad tabulkou stál druhý rámeček a zúžení výsledků působilo jako
+nejtěžší prvek stránky. `FilterBar` proto kartu ztratil.
+
+Vstupy a rozbalovací seznamy dostaly rozměry z reviziORu: výška 2,5 rem,
+teple bílý podklad, 1,5px rámeček v tónu plátna (`#E6E2D6`). Zaškrtávátka mají
+výjimku, jinak by se nafoukla na velikost vstupu.
+
+Řádky tabulky dělí vlasová linka a mají odsazení `1rem` po stranách — seznam
+se pak čte po řádcích, ne jako blok textu.

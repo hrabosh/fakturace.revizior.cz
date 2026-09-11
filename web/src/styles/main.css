@@ -252,9 +252,28 @@ table thead th {
   color: var(--color-neutral-500);
 }
 
-/* Řádek pod kurzorem — táž odezva jako v seznamech reviziORu. */
+/* Řádky: v reviziORu je dělí vlasová linka a mají vyšší řádek, takže se
+   seznam čte po řádcích a ne jako blok textu. */
+table tbody tr {
+  border-top: 1px solid rgba(7, 22, 43, 0.07);
+}
+
+table tbody tr:first-child {
+  border-top: 0;
+}
+
 table tbody tr:hover {
   background: rgba(7, 22, 43, 0.025);
+}
+
+table tbody td {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+table thead th {
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 /* Karty a panely mají v reviziORu 12px rádius; `rounded-lg` (8px) vedle nich
@@ -299,6 +318,45 @@ button.bg-primary-600[disabled] {
 .app-avatar {
   background: var(--color-gold-600);
   color: var(--color-primary-900);
+}
+
+/* ═══════════════════ FORMULÁŘOVÉ PRVKY A FILTRY ═══════════════════
+ * Why: reviziOR má vstupy vyšší (~42 px), na teple bílém podkladu
+ * a s 1,5px rámečkem v tónu plátna. Fakturace je měla 36px, s čistě šedým
+ * rámečkem — vedle sebe to byly dvě různé sady ovládacích prvků.
+ *
+ * Mimo @layer ze stejného důvodu jako chrom: utility v šablonách
+ * (`h-9`, `border-neutral-300`) by pravidla jinak přebily a musely by se
+ * přepisovat na stovkách míst.
+ */
+.filter-bar input[type="text"],
+.filter-bar input[type="search"],
+.filter-bar input[type="date"],
+.filter-bar input[type="number"],
+.filter-bar select,
+.list-controls input,
+.list-controls select {
+  height: 2.5rem;
+  background: var(--color-surface);
+  border: 1.5px solid #E6E2D6;
+  border-radius: 0.5rem;
+  color: var(--color-primary-900);
+}
+
+.filter-bar input::placeholder { color: var(--color-neutral-400); }
+
+.filter-bar input:focus,
+.filter-bar select:focus {
+  border-color: var(--color-primary-600);
+  outline: none;
+}
+
+/* Zaškrtávátka ve filtrech zůstávají malá — pravidlo výše na ně nesmí. */
+.filter-bar input[type="checkbox"],
+.filter-bar input[type="radio"] {
+  height: auto;
+  border-width: 1px;
+  border-radius: 0.25rem;
 }
 
 html, body {
