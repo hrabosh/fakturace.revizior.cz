@@ -17,8 +17,11 @@ const open = ref(false)
 </script>
 
 <template>
-  <div class="bg-surface border border-neutral-200 rounded-lg shadow-sm mb-4 p-3">
-    <div class="flex flex-wrap items-center gap-2">
+  <!-- Bez karty: reviziOR má filtry volně na plátně, takže seznam začíná
+       tabulkou a ne druhým rámečkem nad ní. Karta kolem filtrů dělala
+       z běžného zúžení výsledků nejtěžší prvek stránky. -->
+  <div class="filter-bar mb-4">
+    <div class="flex flex-wrap items-center gap-2.5">
       <slot name="primary" />
 
       <button
