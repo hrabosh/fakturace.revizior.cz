@@ -31,7 +31,7 @@
   --color-neutral-900: #07162B;   /* text — navy reviziORu, ne černá */
 
   /* ─── Surfaces (hodnoty přepínané v .dark) ─── */
-  --color-surface:   #FFFFFF;   /* karty, panely, modály, topbar, sidebar (light = bílá) */
+  --color-surface:   #FDFAF4;   /* karty, panely, modály — teple bílá jako v reviziORu */
 
   /* ─── Gold — druhá barva značky reviziORu (aktivní prvky, zvýraznění) ─── */
   --color-gold-50:   #FCF6E8;
@@ -169,6 +169,10 @@
   border-right-color: rgba(245, 240, 232, 0.10);
 }
 
+.app-sidebar .app-sidebar__brand {
+  color: #F5F0E8;
+}
+
 .app-sidebar .app-sidebar__item {
   color: rgba(245, 240, 232, 0.72);
 }
@@ -235,7 +239,7 @@
 /* Hlavička dostane vlastní pruh, jinak splyne s prvním řádkem — v reviziORu
    ho dělá `bg-gray-50` na bílé kartě, tady teplý ekvivalent. */
 table thead {
-  background: var(--color-neutral-100);
+  background: #F4F0E8;
 }
 
 table thead th {

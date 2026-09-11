@@ -205,3 +205,25 @@ třídou.
 V liště zmizely rámečky sekundárních tlačítek — tři orámovaná tlačítka vedle
 sebe z ní dělala ovládací panel, kdežto reviziOR má v liště jen text a ikony.
 Odsazení na širokých displejích je `lg:px-6`, stejné jako tam.
+
+### Měřeno, ne odhadem (2026-09-11)
+
+Porovnání snímků obou aplikací po pixelech ukázalo, že plátno, lišta i menu
+už mají **shodné** hodnoty (`#F5F0E8`, `#07162B`). Rozdíly zbývaly dva:
+
+| Prvek | reviziOR | fakturace (před) |
+|---|---|---|
+| karta | `#FDFAF4` teple bílá | `#FFFFFF` čistá bílá |
+| hlavička tabulky | o odstín jinak než karta | výrazný pruh `#EFE8DC` |
+
+Čistá bílá na krémovém plátně svítí a čte se jako cizí prvek, proto je
+`--color-surface` teple bílá. Hlavička tabulky je zjemněná na `#F4F0E8` —
+v reviziORu odděluje, ale nekřičí.
+
+**Lišta nese jméno stránky, ne značku.** Značka sedí nahoře v menu, stejně
+jako v reviziORu, takže se v liště neopakuje; jméno se bere z aktivní položky
+menu. Na stránkách mimo menu (profil) zůstává název produktu, aby lišta
+nebyla prázdná.
+
+Co zůstává jinak: filtry. reviziOR má pilulky nad seznamem, fakturace
+rozbalovací seznamy v kartě — to není barva, ale jiný způsob filtrování.
