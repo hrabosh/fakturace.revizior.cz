@@ -295,6 +295,14 @@ const quickActions = computed(() => [
 ].filter(action => navigationItemEnabled(action.to)))
 
 /** Ploché položky menu pro globální search (našeptávač skáče přímo na body menu). */
+const activeLabel = computed(() => {
+  const match = navSections.value
+    .flatMap((s) => s.items)
+    .find((item) => !item.external && isActive(item))
+
+  return match?.label ?? auth.productName
+})
+
 const flatNavItems = computed(() =>
   navSections.value.flatMap(s => s.items.map(it => ({ to: it.to, label: it.label, icon: it.icon, external: it.external })))
 )
@@ -378,16 +386,9 @@ onMounted(async () => {
     <!-- ═════════════════════ TOPBAR ═════════════════════ -->
     <header class="app-topbar sticky top-0 z-30 border-b border-neutral-200">
       <div class="h-14 px-4 lg:px-6 flex items-center justify-between gap-3">
-        <!-- Logo -->
-        <RouterLink to="/" class="flex items-center gap-2.5 shrink-0" @click="mobileOpen = false">
-          <img src="/styles/logo.svg" :alt="auth.productName" class="w-8 h-8" />
-          <span v-if="auth.isManaged" class="text-sm font-semibold leading-tight select-none text-primary-700">
-            {{ auth.productName }}
-          </span>
-          <span v-else class="text-sm font-semibold leading-tight select-none">
-            My<span class="text-primary-600">Invoice</span><span class="text-neutral-400 font-normal">.cz</span>
-          </span>
-        </RouterLink>
+        <!-- Nadpis sekce. reviziOR má v liště jméno stránky, ne značku —
+             značka sedí nahoře v menu, takže se v liště neopakuje. -->
+        <h1 class="min-w-0 truncate text-[17px] lg:text-[19px] font-bold text-neutral-900">{{ activeLabel }}</h1>
 
         <!-- Pravá strana topbaru -->
         <div class="flex items-center gap-2 text-sm">
@@ -526,7 +527,12 @@ onMounted(async () => {
           mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
         ]"
       >
-        <nav class="flex-1 overflow-y-auto scrollbar-slim px-2.5 py-3">
+        <RouterLink to="/" class="app-sidebar__brand flex items-center gap-2.5 px-4 pt-4 pb-3" @click="mobileOpen = false">
+          <img src="/styles/logo.svg" :alt="auth.productName" class="w-7 h-7 shrink-0" />
+          <span class="text-[15px] font-bold leading-tight select-none truncate">{{ auth.productName }}</span>
+        </RouterLink>
+
+        <nav class="flex-1 overflow-y-auto scrollbar-slim px-2.5 pb-3">
           <!-- Globální vyhledávač (před Přehled) — našeptává menu + hledá klienty/faktury -->
           <GlobalSearch class="app-sidebar__search" :menu-items="flatNavItems" @navigated="mobileOpen = false" />
 
