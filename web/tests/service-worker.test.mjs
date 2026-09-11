@@ -22,76 +22,28 @@ test('API requests always bypass caches', async () => {
   }
 })
 
-test('hashed Vite assets use cache-first', async () => {
-  const worker = createWorker(source)
-  const request = {
-    url: 'https://invoice.test/assets/app-deadbeef.js',
-    method: 'GET',
-    destination: 'script',
+/**
+ * Statiku drží prohlížeč podle hlaviček, ne worker. Cache-first vrstva byla
+ * jediné místo, které umělo vrátit starý soubor i po nasazení — proto tu není.
+ */
+test('static assets are left to the browser', () => {
+  for (const [url, destination] of [
+    ['https://invoice.test/assets/app-deadbeef.js', 'script'],
+    ['https://invoice.test/assets/app-deadbeef.css', 'style'],
+    ['https://invoice.test/fonts/plus-jakarta-sans-latin.woff2', 'font'],
+    ['https://invoice.test/styles/invoice.css', 'style'],
+    ['https://invoice.test/pwa/icon-192.png', 'image'],
+  ]) {
+    const worker = createWorker(source)
+    const result = worker.dispatchFetch({ url, method: 'GET', destination })
+
+    assert.equal(result, undefined, url)
+    assert.equal(worker.cacheOpenCount, 0, url)
+    assert.equal(worker.fetchCalls.length, 0, url)
   }
-
-  await worker.dispatchFetch(request)
-
-  assert.equal(worker.cacheOpenCount, 1)
-  assert.equal(worker.fetchCalls.length, 1)
-  assert.equal(worker.cachePutCalls.length, 1)
-  assert.equal(worker.cachePutCalls[0][0], request)
 })
 
-test('cached hashed asset is served without hitting the network', async () => {
-  const url = 'https://invoice.test/assets/app-deadbeef.js'
-  const worker = createWorker(source, { cached: { [url]: { source: 'cache' } } })
-
-  const response = await worker.dispatchFetch({ url, method: 'GET', destination: 'script' })
-
-  assert.equal(response.source, 'cache')
-  assert.equal(worker.fetchCalls.length, 0)
-})
-
-test('unhashed /styles/ asset revalidates in the background', async () => {
-  const url = 'https://invoice.test/styles/invoice.css'
-  const worker = createWorker(source, { cached: { [url]: { source: 'cache' } } })
-
-  const response = await worker.dispatchFetch({ url, method: 'GET', destination: 'style' })
-
-  // Odpověď přijde okamžitě z cache…
-  assert.equal(response.source, 'cache')
-
-  // …ale na pozadí se stáhne a uloží aktuální verze, takže se změna
-  // propíše bez ručního bumpu STATIC_CACHE.
-  await worker.settle()
-  assert.equal(worker.fetchCalls.length, 1)
-  assert.equal(worker.cachePutCalls.length, 1)
-})
-
-test('uncached /styles/ asset falls back to the network response', async () => {
-  const worker = createWorker(source)
-  const request = {
-    url: 'https://invoice.test/styles/logo.svg',
-    method: 'GET',
-    destination: 'image',
-  }
-
-  const response = await worker.dispatchFetch(request)
-
-  assert.equal(response, worker.networkResponse)
-  assert.equal(worker.fetchCalls.length, 1)
-  assert.equal(worker.cachePutCalls.length, 1)
-})
-
-test('non-GET requests are never cached', async () => {
-  const worker = createWorker(source)
-  const result = worker.dispatchFetch({
-    url: 'https://invoice.test/styles/invoice.css',
-    method: 'POST',
-    destination: 'style',
-  })
-
-  assert.equal(result, undefined)
-  assert.equal(worker.cacheOpenCount, 0)
-})
-
-test('HTML navigation stays on the network without service-worker caching', () => {
+test('HTML navigation stays on the network', () => {
   const worker = createWorker(source)
   const result = worker.dispatchFetch({
     url: 'https://invoice.test/invoices',
@@ -104,19 +56,29 @@ test('HTML navigation stays on the network without service-worker caching', () =
   assert.equal(worker.fetchCalls.length, 0)
 })
 
-test('activation drops stale MyInvoice caches only', async () => {
-  // Verze cache se bumpuje (v1 → v2 při ladění zaseklé statiky), takže se
-  // čte ze zdroje workeru. Natvrdo zapsaná verze shodila CI při každém bumpu
-  // a přitom netestovala nic navíc.
-  const current = source.match(/STATIC_CACHE_PREFIX\}(v\d+)`/)[1]
-  const stale = ['myinvoice-static-v0', 'myinvoice-static-v1', 'myinvoice-static-v2']
-    .filter((name) => name !== `myinvoice-static-${current}`)
+test('non-GET requests are never intercepted', () => {
+  const worker = createWorker(source)
+  const result = worker.dispatchFetch({
+    url: 'https://invoice.test/assets/app-deadbeef.js',
+    method: 'POST',
+    destination: 'script',
+  })
 
+  assert.equal(result, undefined)
+  assert.equal(worker.cacheOpenCount, 0)
+})
+
+/**
+ * Úklid po předchozích verzích: worker cachoval statiku pod `myinvoice-static-*`
+ * a uživatel v té cache mohl uvíznout. Aktivace ji smaže celou, cizí cache
+ * nechá být.
+ */
+test('activation drops every MyInvoice cache and keeps foreign ones', async () => {
   const worker = createWorker(source, {
-    existingCaches: [...stale, `myinvoice-static-${current}`, 'other-app-cache'],
+    existingCaches: ['myinvoice-static-v1', 'myinvoice-static-v2', 'other-app-cache'],
   })
 
   await worker.dispatchActivate()
 
-  assert.deepEqual(worker.deletedCaches, stale)
+  assert.deepEqual(worker.deletedCaches, ['myinvoice-static-v1', 'myinvoice-static-v2'])
 })

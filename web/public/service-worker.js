@@ -1,65 +1,20 @@
-const STATIC_CACHE_PREFIX = 'myinvoice-static-'
-// v2 (2026-09-10): cache byla od začátku `v1`, takže se nikdy nevyčistila —
-// stará statika v ní ležela i po nasazení nové verze. Aktivace nového workeru
-// smaže všechno, co nese jiný sufix než aktuální; bump je tedy jediný způsob,
-// jak uživateli zaseklou statiku vyhodit bez zásahu v prohlížeči.
-const STATIC_CACHE = `${STATIC_CACHE_PREFIX}v2`
-const STATIC_DESTINATIONS = new Set(['font', 'image', 'script', 'style'])
+// Service worker aplikace.
+//
+// **Statiku schválně necachuje.** Soubory buildu mají v názvu otisk obsahu
+// a servírují se s `immutable`, takže je prohlížeč drží sám a nová verze má
+// vždy novou adresu; `index.html` a tenhle soubor jdou s `no-cache`, takže se
+// ověřují při každé návštěvě. Cache-first vrstva v service workeru k tomu
+// nepřidávala nic než riziko: byla jediným místem, které umělo vrátit starý
+// soubor i po nasazení, a ladění „proč nevidím změny" stálo víc než offline
+// režim, který aplikace stejně nikdy needitovala.
+//
+// Worker zůstává kvůli instalovatelnosti (PWA vyžaduje fetch handler) a kvůli
+// úklidu: při aktivaci smaže všechny cache, které si předchozí verze udělaly.
 
-// Vite hashuje názvy souborů a ikony jsou stabilní → cache-first je bezpečné.
-const IMMUTABLE_PREFIXES = ['/assets/', '/pwa/']
-// Nehashovaná statika (invoice.css, logo.svg). Cache-first by tu držel starou
-// verzi až do bumpu STATIC_CACHE, proto stale-while-revalidate.
-const REVALIDATE_PREFIXES = ['/styles/']
+const STATIC_CACHE_PREFIX = 'myinvoice-static-'
 
 function isApiRequest(url) {
   return url.pathname === '/api' || url.pathname.startsWith('/api/')
-}
-
-function hasPrefix(pathname, prefixes) {
-  return prefixes.some((prefix) => pathname.startsWith(prefix))
-}
-
-function selectStrategy(request, url) {
-  if (request.method !== 'GET') return null
-  if (!STATIC_DESTINATIONS.has(request.destination)) return null
-
-  if (hasPrefix(url.pathname, IMMUTABLE_PREFIXES)) return cacheFirst
-  if (hasPrefix(url.pathname, REVALIDATE_PREFIXES)) return staleWhileRevalidate
-
-  return null
-}
-
-async function putIfStorable(cache, request, response) {
-  if (response.ok && response.type === 'basic') {
-    await cache.put(request, response.clone())
-  }
-}
-
-async function cacheFirst(request) {
-  const cache = await caches.open(STATIC_CACHE)
-  const cached = await cache.match(request)
-  if (cached) return cached
-
-  const response = await fetch(request)
-  await putIfStorable(cache, request, response)
-  return response
-}
-
-async function staleWhileRevalidate(request, event) {
-  const cache = await caches.open(STATIC_CACHE)
-  const cached = await cache.match(request)
-
-  const revalidated = fetch(request).then(async (response) => {
-    await putIfStorable(cache, request, response)
-    return response
-  })
-
-  if (!cached) return revalidated
-
-  // Cache se aktualizuje na pozadí; chyba sítě nesmí shodit odpověď z cache.
-  event.waitUntil(revalidated.catch(() => undefined))
-  return cached
 }
 
 self.addEventListener('install', (event) => {
@@ -71,7 +26,7 @@ self.addEventListener('activate', (event) => {
     const cacheNames = await caches.keys()
     await Promise.all(
       cacheNames
-        .filter((name) => name.startsWith(STATIC_CACHE_PREFIX) && name !== STATIC_CACHE)
+        .filter((name) => name.startsWith(STATIC_CACHE_PREFIX))
         .map((name) => caches.delete(name)),
     )
     await self.clients.claim()
@@ -84,13 +39,9 @@ self.addEventListener('fetch', (event) => {
 
   if (url.origin !== self.location.origin) return
 
+  // Odpovědi API se nesmí cachovat ani omylem; zbytek si řídí prohlížeč
+  // podle hlaviček.
   if (isApiRequest(url)) {
     event.respondWith(fetch(request, { cache: 'no-store' }))
-    return
-  }
-
-  const strategy = selectStrategy(request, url)
-  if (strategy) {
-    event.respondWith(strategy(request, event))
   }
 })

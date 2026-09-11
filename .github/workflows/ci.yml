@@ -251,6 +251,28 @@ jobs:
             [ "$CAPS" = "401" ] || { echo "✗ capabilities bez podpisu vrátilo $CAPS, čekáno 401"; exit 1; }
             echo "✓ health ok, service API vyžaduje podpis"
 
+            # Frontend: kazdy soubor z buildu musi vratit svuj typ obsahu.
+            # Root vhostu miri na current/, build lezi v current/web/dist/,
+            # takze cesta bez aliasu spadne do SPA fallbacku a vrati
+            # index.html se stavem 200 — kontrola stavovym kodem to nechyti.
+            INDEX=$(curl -s --max-time 10 https://fakturace.revizior.cz/)
+            CSS_PATH=$(printf '%s' "$INDEX" | grep -oE 'assets/[A-Za-z0-9._-]+\.css' | head -1)
+            [ -n "$CSS_PATH" ] || { echo "✗ index.html neodkazuje zadny styl"; exit 1; }
+
+            check_type() {
+              TYPE=$(curl -s -o /dev/null -w '%{content_type}' --max-time 10 "https://fakturace.revizior.cz/$1")
+              case "$TYPE" in
+                $2*) ;;
+                *) echo "✗ /$1 vratilo '$TYPE', cekano '$2' (nejspis SPA fallback)"; exit 1 ;;
+              esac
+            }
+
+            check_type "$CSS_PATH" "text/css"
+            check_type "fonts/plus-jakarta-sans-latin.woff2" "font/woff2"
+            check_type "manifest.webmanifest" "application/manifest+json"
+            check_type "service-worker.js" "application/javascript"
+            echo "✓ styl, font, manifest i worker se servíruji se spravnym typem"
+
             echo "→ Úklid starých release (ponechá poslední 3)…"
             ls -1dt "$BASE"/releases/* | tail -n +4 | xargs -r rm -rf
 

@@ -159,6 +159,30 @@ ln -sfn /var/www/fakturace.revizior.cz/releases/<starší> /var/www/fakturace.re
 sudo systemctl reload php8.5-fpm
 ```
 
+## Proč statiku necachuje service worker
+
+Soubory buildu mají v názvu otisk obsahu a jdou s `immutable`, `index.html`
+a `service-worker.js` s `no-cache`. Prohlížeč si tak novou verzi vyzvedne sám
+a stará adresa se už nikdy nepoužije.
+
+Worker proto **statiku necachuje**. Dokud to dělal (cache-first nad
+`/assets/`), byl jediným místem, které umělo vrátit starý soubor i po
+úspěšném nasazení — a hledání „proč nevidím změny" stálo pokaždé víc než
+offline režim, který aplikace stejně nevyužívala. Zůstal kvůli
+instalovatelnosti PWA a kvůli úklidu: při aktivaci smaže všechny cache
+`myinvoice-static-*`, které po sobě nechaly starší verze.
+
+**Když se změna přesto neprojeví**, postupuje se odshora:
+
+```bash
+curl -sI https://fakturace.revizior.cz/ | grep -i cache-control   # no-cache
+curl -s https://fakturace.revizior.cz/ | grep -oE 'assets/[^"]+\.css'
+curl -s https://fakturace.revizior.cz/<ten soubor> | grep -c <hledané pravidlo>
+```
+
+Když server vrací správný obsah, je to cache prohlížeče: F12 → Application →
+Service Workers → Unregister, vedle Storage → Clear site data.
+
 ## Známý stav: Redis je vypnutý
 
 `/api/health` hlásí `"redis": false` a je to **záměr, ne porucha** — instalace
