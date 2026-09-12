@@ -159,6 +159,12 @@
  * `hover:bg-neutral-100`) přebily bez ohledu na specificitu. Takhle stačí
  * v šabloně přidat třídu a barvové utility se nemusí vypisovat pryč.
  */
+/* Nadpis stránky převzala lišta (viz AppLayout), takže v obsahu jen zabíral
+   řádek a opakoval to, co je o kus výš. */
+.page-title-hoisted {
+  display: none;
+}
+
 .app-topbar {
   background: var(--color-neutral-50);
   border-bottom-color: rgba(7, 22, 43, 0.10);
@@ -167,6 +173,23 @@
 .app-sidebar {
   background: var(--color-primary-900);
   border-right-color: rgba(245, 240, 232, 0.10);
+}
+
+/* Scrollbar v tmavém menu: světlý palec, jinak by na navy nebyl vidět
+   a menu by vypadalo, že se scrollovat nedá. */
+.app-sidebar .scrollbar-slim {
+  /* Rezervované místo: bez něj obsah menu poskočí, jakmile se overlay
+     scrollbar objeví. */
+  scrollbar-gutter: stable;
+  scrollbar-color: rgba(245, 240, 232, 0.25) transparent;
+}
+
+.app-sidebar .scrollbar-slim::-webkit-scrollbar-thumb {
+  background: rgba(245, 240, 232, 0.25);
+}
+
+.app-sidebar .scrollbar-slim::-webkit-scrollbar-thumb:hover {
+  background: rgba(245, 240, 232, 0.40);
 }
 
 .app-sidebar .app-sidebar__brand {
