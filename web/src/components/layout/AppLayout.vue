@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { RouterLink, RouterView, useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/stores/auth'
@@ -295,6 +295,51 @@ const quickActions = computed(() => [
 ].filter(action => navigationItemEnabled(action.to)))
 
 /** Ploché položky menu pro globální search (našeptávač skáče přímo na body menu). */
+/**
+ * Nadpis stránky patří do lišty, ne do obsahu.
+ *
+ * reviziOR ho má jen v liště; fakturace ho měla na každé stránce v obsahu,
+ * takže po přesunu do lišty stálo totéž slovo dvakrát pod sebou. Přepisovat
+ * kvůli tomu 64 stránek by bylo víc práce než užitku, takže se `h1` z obsahu
+ * **přesune**: text se vezme do lišty a původní nadpis se skryje.
+ *
+ * Proč přes DOM a ne přes prop: nadpis většina stránek renderuje až po
+ * načtení dat, takže ho v okamžiku navigace ještě nikdo nezná.
+ */
+const pageTitle = ref('')
+let titleObserver: MutationObserver | null = null
+
+function syncPageTitle() {
+  const heading = document.querySelector<HTMLElement>('main h1')
+  const text = heading?.textContent?.trim() ?? ''
+
+  if (pageTitle.value !== text) pageTitle.value = text
+  if (heading && !heading.classList.contains('page-title-hoisted')) {
+    heading.classList.add('page-title-hoisted')
+  }
+}
+
+onMounted(() => {
+  syncPageTitle()
+  const main = document.querySelector('main')
+  if (!main) return
+
+  // Obsah se plní asynchronně; bez pozorování by lišta držela nadpis
+  // předchozí stránky.
+  titleObserver = new MutationObserver(() => syncPageTitle())
+  titleObserver.observe(main, { childList: true, subtree: true })
+})
+
+onBeforeUnmount(() => {
+  titleObserver?.disconnect()
+  titleObserver = null
+})
+
+watch(() => route.fullPath, () => {
+  pageTitle.value = ''
+  nextTick(syncPageTitle)
+})
+
 const activeLabel = computed(() => {
   const match = navSections.value
     .flatMap((s) => s.items)
@@ -381,152 +426,26 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="min-h-screen flex flex-col bg-neutral-50">
+  <div class="min-h-screen flex bg-neutral-50">
 
-    <!-- ═════════════════════ TOPBAR ═════════════════════ -->
-    <header class="app-topbar sticky top-0 z-30 border-b border-neutral-200">
-      <div class="h-14 px-4 lg:px-6 flex items-center justify-between gap-3">
-        <!-- Nadpis sekce. reviziOR má v liště jméno stránky, ne značku —
-             značka sedí nahoře v menu, takže se v liště neopakuje. -->
-        <h1 class="min-w-0 truncate text-[17px] lg:text-[19px] font-bold text-neutral-900">{{ activeLabel }}</h1>
+    <!-- Mobile backdrop -->
+    <div
+      v-if="mobileOpen" @click="mobileOpen = false"
+      class="lg:hidden fixed inset-0 bg-black/50 z-20"
+      aria-hidden="true"
+    ></div>
 
-        <!-- Pravá strana topbaru -->
-        <div class="flex items-center gap-2 text-sm">
-          <a
-            v-if="auth.returnUrl"
-            :href="auth.returnUrl"
-            class="hidden md:inline-flex h-8 items-center rounded-md border border-primary-200 px-3 text-sm font-medium text-primary-700 hover:bg-primary-50"
-          >{{ t('managed.back_to_revizior') }}</a>
-          <!-- Rychlé vytvoření (desktop, jen pro zapisující) — jedno decentní tlačítko s menu -->
-          <div v-if="auth.canWrite" class="relative hidden lg:block">
-            <button
-              type="button" @click="quickOpen = !quickOpen"
-              class="cursor-pointer inline-flex items-center gap-1.5 h-8 pl-2 pr-2.5 text-sm rounded-md border border-neutral-200 text-neutral-600 hover:bg-neutral-50 hover:text-primary-700 transition-colors"
-              :class="{ 'bg-neutral-50 text-primary-700': quickOpen }"
-              :aria-expanded="quickOpen" :aria-label="t('nav.quick_new')"
-            >
-              <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14M5 12h14" />
-              </svg>
-              <span>{{ t('nav.quick_new') }}</span>
-              <svg class="w-3 h-3 ml-0.5 transition" :class="{ 'rotate-180': quickOpen }" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-            <transition
-              enter-active-class="transition duration-100 ease-out"
-              enter-from-class="opacity-0 scale-95" enter-to-class="opacity-100 scale-100"
-              leave-active-class="transition duration-75 ease-in"
-              leave-from-class="opacity-100 scale-100" leave-to-class="opacity-0 scale-95"
-            >
-              <div v-if="quickOpen" class="absolute right-0 mt-1 w-52 bg-surface border border-neutral-200 rounded-lg shadow-lg py-1 z-40">
-                <RouterLink
-                  v-for="s in quickActions" :key="s.to" :to="s.to" @click="quickOpen = false"
-                  class="flex items-center gap-2.5 px-3 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-primary-700"
-                >
-                  <svg class="w-4 h-4 shrink-0 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" :d="s.icon" />
-                  </svg>
-                  <span>{{ s.label }}</span>
-                </RouterLink>
-              </div>
-            </transition>
-            <div v-if="quickOpen" @click="quickOpen = false" class="fixed inset-0 z-10" aria-hidden="true"></div>
-          </div>
-          <!-- Jemný předěl, aby „Vytvořit" nebylo nalepené na jméně uživatele -->
-          <span v-if="auth.canWrite" class="hidden lg:inline-block w-px h-5 bg-neutral-200 mx-1" aria-hidden="true"></span>
-
-          <!-- Jméno uživatele (desktop) — link na profil (heslo + 2FA v záložkách). -->
-          <!-- Jméno + zlatý monogram: stejná dvojice jako v liště reviziORu. -->
-          <RouterLink
-            to="/profile/password"
-            class="hidden lg:inline-flex items-center gap-2 text-sm text-neutral-600 hover:text-primary-700"
-            :title="t('auth.profile_title')"
-          >
-            <span class="hover:underline">{{ auth.user?.name }}</span>
-            <span class="app-avatar w-7 h-7 rounded-full inline-flex items-center justify-center text-[11px] font-bold">{{ userInitials }}</span>
-          </RouterLink>
-
-          <!-- Přepínač motivu (System / Light / Dark) — na mobilu je v drawer patičce -->
-          <div class="hidden sm:inline-flex">
-          </div>
-
-          <!-- Nápověda -->
-          <a
-            href="/manual" target="_blank" rel="noopener"
-            class="hidden sm:inline-flex w-8 h-8 items-center justify-center rounded-md text-neutral-600 hover:bg-neutral-100 hover:text-primary-700"
-            :title="t('nav.help')"
-            :aria-label="t('nav.help')"
-          >
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" :d="ICONS.help" />
-            </svg>
-          </a>
-
-          <!-- Odhlásit (desktop) -->
-          <button
-            v-if="canLockSession"
-            @click="sessionSecurity.lock"
-            class="cursor-pointer hidden sm:inline-flex px-3 h-8 items-center text-sm rounded-md text-neutral-600 hover:bg-neutral-100 hover:text-primary-700"
-          >{{ t('session_lock.lock_now') }}</button>
-          <button
-            @click="logout"
-            :disabled="logoutBusy"
-            class="cursor-pointer hidden sm:inline-flex px-3 h-8 items-center text-sm rounded-md text-neutral-600 hover:bg-neutral-100 hover:text-primary-700 disabled:opacity-60"
-          >{{ t('nav.logout') }}</button>
-
-          <!-- Hamburger (mobile, < lg) -->
-          <button
-            type="button" @click="mobileOpen = !mobileOpen"
-            :aria-expanded="mobileOpen" aria-label="Menu"
-            class="lg:hidden inline-flex items-center justify-center w-9 h-9 rounded-md text-neutral-700 hover:bg-neutral-100"
-          >
-            <svg v-if="!mobileOpen" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-            <svg v-else class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      <!-- Active supplier banner -->
-      <div v-if="supplierStore.hasMultiple && supplierStore.currentSupplier" class="bg-primary-50 border-t border-primary-100">
-        <div class="px-4 py-1.5 text-xs text-primary-700 flex items-center gap-2">
-          <svg class="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v5m-4 0h4"/>
-          </svg>
-          <span class="flex-1 min-w-0 truncate">
-            {{ t('supplier.active_label') }}: <strong class="font-semibold">{{ supplierStore.currentSupplier.company_name }}</strong>
-            <span v-if="supplierStore.currentSupplier.ic" class="font-mono text-primary-600 ml-1">({{ t('common.ic') }} {{ supplierStore.currentSupplier.ic }})</span>
-          </span>
-          <SupplierSwitcher />
-        </div>
-      </div>
-    </header>
-
-    <!-- ═════════════════════ TĚLO: SIDEBAR + OBSAH ═════════════════════ -->
-    <div class="flex flex-1 min-h-0">
-
-      <!-- Mobile backdrop -->
-      <div
-        v-if="mobileOpen" @click="mobileOpen = false"
-        class="lg:hidden fixed inset-0 bg-black/50 z-20"
-        aria-hidden="true"
-      ></div>
-
-      <!-- ── SIDEBAR ── -->
-      <aside
-        :class="[
-          'fixed lg:sticky top-14 z-30 lg:z-auto',
-          'h-[calc(100vh-3.5rem)] w-60 shrink-0',
-          'app-sidebar border-r',
-          'flex flex-col',
-          'transition-transform duration-200 ease-in-out',
-          mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
-        ]"
-      >
+    <!-- ── SIDEBAR ── -->
+    <aside
+      :class="[
+        'fixed lg:sticky top-0 z-30 lg:z-auto',
+        'h-screen w-64 shrink-0',
+        'app-sidebar border-r',
+        'flex flex-col',
+        'transition-transform duration-200 ease-in-out',
+        mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
+      ]"
+    >
         <RouterLink to="/" class="app-sidebar__brand flex items-center gap-2.5 px-4 pt-4 pb-3" @click="mobileOpen = false">
           <img src="/styles/logo.svg" :alt="auth.productName" class="w-7 h-7 shrink-0" />
           <span class="text-[15px] font-bold leading-tight select-none truncate">{{ auth.productName }}</span>
@@ -654,10 +573,136 @@ onMounted(async () => {
             >{{ t('nav.logout') }}</button>
           </div>
         </div>
-      </aside>
+    </aside>
+
+    <div class="flex-1 min-w-0 flex flex-col">
+
+    <!-- ═════════════════════ TOPBAR ═════════════════════ -->
+    <header class="app-topbar sticky top-0 z-30 border-b border-neutral-200">
+      <div class="h-14 px-4 lg:px-6 flex items-center justify-between gap-3">
+        <!-- Nadpis sekce. reviziOR má v liště jméno stránky, ne značku —
+             značka sedí nahoře v menu, takže se v liště neopakuje. -->
+        <h1 class="min-w-0 truncate text-[17px] lg:text-[19px] font-bold text-neutral-900">{{ pageTitle || activeLabel }}</h1>
+
+        <!-- Pravá strana topbaru -->
+        <div class="flex items-center gap-2 text-sm">
+          <a
+            v-if="auth.returnUrl"
+            :href="auth.returnUrl"
+            class="hidden md:inline-flex h-8 items-center rounded-md border border-primary-200 px-3 text-sm font-medium text-primary-700 hover:bg-primary-50"
+          >{{ t('managed.back_to_revizior') }}</a>
+          <!-- Rychlé vytvoření (desktop, jen pro zapisující) — jedno decentní tlačítko s menu -->
+          <div v-if="auth.canWrite" class="relative hidden lg:block">
+            <button
+              type="button" @click="quickOpen = !quickOpen"
+              class="cursor-pointer inline-flex items-center gap-1.5 h-8 pl-2 pr-2.5 text-sm rounded-md border border-neutral-200 text-neutral-600 hover:bg-neutral-50 hover:text-primary-700 transition-colors"
+              :class="{ 'bg-neutral-50 text-primary-700': quickOpen }"
+              :aria-expanded="quickOpen" :aria-label="t('nav.quick_new')"
+            >
+              <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14M5 12h14" />
+              </svg>
+              <span>{{ t('nav.quick_new') }}</span>
+              <svg class="w-3 h-3 ml-0.5 transition" :class="{ 'rotate-180': quickOpen }" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <transition
+              enter-active-class="transition duration-100 ease-out"
+              enter-from-class="opacity-0 scale-95" enter-to-class="opacity-100 scale-100"
+              leave-active-class="transition duration-75 ease-in"
+              leave-from-class="opacity-100 scale-100" leave-to-class="opacity-0 scale-95"
+            >
+              <div v-if="quickOpen" class="absolute right-0 mt-1 w-52 bg-surface border border-neutral-200 rounded-lg shadow-lg py-1 z-40">
+                <RouterLink
+                  v-for="s in quickActions" :key="s.to" :to="s.to" @click="quickOpen = false"
+                  class="flex items-center gap-2.5 px-3 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-primary-700"
+                >
+                  <svg class="w-4 h-4 shrink-0 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" :d="s.icon" />
+                  </svg>
+                  <span>{{ s.label }}</span>
+                </RouterLink>
+              </div>
+            </transition>
+            <div v-if="quickOpen" @click="quickOpen = false" class="fixed inset-0 z-10" aria-hidden="true"></div>
+          </div>
+          <!-- Jemný předěl, aby „Vytvořit" nebylo nalepené na jméně uživatele -->
+          <span v-if="auth.canWrite" class="hidden lg:inline-block w-px h-5 bg-neutral-200 mx-1" aria-hidden="true"></span>
+
+          <!-- Jméno uživatele (desktop) — link na profil (heslo + 2FA v záložkách). -->
+          <!-- Jméno + zlatý monogram: stejná dvojice jako v liště reviziORu. -->
+          <RouterLink
+            to="/profile/password"
+            class="hidden lg:inline-flex items-center gap-2 text-sm text-neutral-600 hover:text-primary-700"
+            :title="t('auth.profile_title')"
+          >
+            <span class="hover:underline">{{ auth.user?.name }}</span>
+            <span class="app-avatar w-7 h-7 rounded-full inline-flex items-center justify-center text-[11px] font-bold">{{ userInitials }}</span>
+          </RouterLink>
+
+          <!-- Přepínač motivu (System / Light / Dark) — na mobilu je v drawer patičce -->
+          <div class="hidden sm:inline-flex">
+          </div>
+
+          <!-- Nápověda -->
+          <a
+            href="/manual" target="_blank" rel="noopener"
+            class="hidden sm:inline-flex w-8 h-8 items-center justify-center rounded-md text-neutral-600 hover:bg-neutral-100 hover:text-primary-700"
+            :title="t('nav.help')"
+            :aria-label="t('nav.help')"
+          >
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" :d="ICONS.help" />
+            </svg>
+          </a>
+
+          <!-- Odhlásit (desktop) -->
+          <button
+            v-if="canLockSession"
+            @click="sessionSecurity.lock"
+            class="cursor-pointer hidden sm:inline-flex px-3 h-8 items-center text-sm rounded-md text-neutral-600 hover:bg-neutral-100 hover:text-primary-700"
+          >{{ t('session_lock.lock_now') }}</button>
+          <button
+            @click="logout"
+            :disabled="logoutBusy"
+            class="cursor-pointer hidden sm:inline-flex px-3 h-8 items-center text-sm rounded-md text-neutral-600 hover:bg-neutral-100 hover:text-primary-700 disabled:opacity-60"
+          >{{ t('nav.logout') }}</button>
+
+          <!-- Hamburger (mobile, < lg) -->
+          <button
+            type="button" @click="mobileOpen = !mobileOpen"
+            :aria-expanded="mobileOpen" aria-label="Menu"
+            class="lg:hidden inline-flex items-center justify-center w-9 h-9 rounded-md text-neutral-700 hover:bg-neutral-100"
+          >
+            <svg v-if="!mobileOpen" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            <svg v-else class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Active supplier banner -->
+      <div v-if="supplierStore.hasMultiple && supplierStore.currentSupplier" class="bg-primary-50 border-t border-primary-100">
+        <div class="px-4 py-1.5 text-xs text-primary-700 flex items-center gap-2">
+          <svg class="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v5m-4 0h4"/>
+          </svg>
+          <span class="flex-1 min-w-0 truncate">
+            {{ t('supplier.active_label') }}: <strong class="font-semibold">{{ supplierStore.currentSupplier.company_name }}</strong>
+            <span v-if="supplierStore.currentSupplier.ic" class="font-mono text-primary-600 ml-1">({{ t('common.ic') }} {{ supplierStore.currentSupplier.ic }})</span>
+          </span>
+          <SupplierSwitcher />
+        </div>
+      </div>
+    </header>
+
+    <!-- ═════════════════════ TĚLO: SIDEBAR + OBSAH ═════════════════════ -->
 
       <!-- ── HLAVNÍ OBSAH ── -->
-      <div class="flex-1 min-w-0 flex flex-col">
         <main class="flex-1 px-5 sm:px-8 py-6 w-full">
           <RouterView />
         </main>
@@ -778,5 +823,4 @@ onMounted(async () => {
         </footer>
       </div>
     </div>
-  </div>
 </template>

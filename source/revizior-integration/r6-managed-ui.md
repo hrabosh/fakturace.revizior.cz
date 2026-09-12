@@ -241,3 +241,20 @@ výjimku, jinak by se nafoukla na velikost vstupu.
 
 Řádky tabulky dělí vlasová linka a mají odsazení `1rem` po stranách — seznam
 se pak čte po řádcích, ne jako blok textu.
+
+### Menu od horního okraje (2026-09-12)
+
+reviziOR má menu jako svislý sloupec přes celou výšku a lištu až vedle něj;
+fakturace měla lištu přes celou šířku a menu začínalo až pod ní. Proto ty dvě
+obrazovky vedle sebe nemohly vypadat stejně, i když měly stejné barvy.
+
+Kořen rozvržení je teď `flex` se dvěma sloupci: `aside` (`h-screen`,
+`sticky top-0`) a vedle něj sloupec s lištou a obsahem. Menu je o něco širší
+(`w-64`), protože rezervované místo pro scrollbar ubralo z textu a delší
+popisky se lámaly.
+
+**Scrollbar je vidět v obou aplikacích.** V reviziORu ho skrývalo
+`display: none` plus gradientová maska, takže při delším menu nikdo nepoznal,
+že se dá rolovat. Obě strany mají teď tenký scrollbar s `scrollbar-gutter:
+stable` — bez rezervovaného místa by obsah poskočil, jakmile se overlay
+scrollbar objeví.
