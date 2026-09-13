@@ -26,7 +26,9 @@ use Throwable;
  * - `null` u `city`/`postalCode`/`countryCode` znamená „ReviziOR to neví":
  *   u nového klienta zůstane pole prázdné (země = země dodavatele, stejný
  *   default jako formulář), u existujícího se hodnota doplněná ve fakturaci
- *   nepřepíše;
+ *   nepřepíše. Od INV-003 posílá ReviziOR skutečné části adresy všude, kde je
+ *   zná (z ARES nebo od uživatele), takže `null` je čím dál vzácnější —
+ *   chování se ale nemění, protože „neví" a „prázdné" musí zůstat rozlišené;
  * - `active=false` klienta archivuje, `true` odarchivuje; doklady zůstávají;
  * - link, klient, kontakty i audit jsou jedna transakce.
  */

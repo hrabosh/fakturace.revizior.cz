@@ -86,4 +86,20 @@ Z ReviziOR backendu přes reálnou cestu (`revizior:invoicing:probe`,
 
 1. ~~invoice draft + `GET /invoices/{externalInvoiceKey}`~~ — hotovo, viz
    [`r3-invoice-draft.md`](r3-invoice-draft.md);
-2. price resolution — odloženo, consumer endpoint nevolá (cenu doplňuje uživatel).
+2. ~~price resolution~~ — hotovo na obou stranách (INV-004, 2026-09-13). Poskytovatel
+   endpoint i `PriceListItemResolver` měl od začátku a capability `priceResolution`
+   inzeroval jako `true`; chyběl jen consumer. Ten teď volá
+   `POST /organizations/{uuid}/prices/resolve` při sestavení podkladu pro fakturu —
+   jednou za celý podklad, s rozhodným datem = datum zdanitelného plnění. Poskytovatel
+   se nemění.
+
+## Strukturovaná adresa klienta (INV-003, 2026-09-13)
+
+Consumer nově drží u klienta ulici, město, PSČ a zemi zvlášť a posílá je vyplněné,
+kdykoli je zná (z ARES nebo od uživatele). **Poskytovatel se nemění** — kontrakt v1
+schéma `ClientAddress` s nullable částmi měl od začátku a `ReviziorClientSynchronizer`
+je uměl zapsat.
+
+Chování u `null` zůstává: „zdroj to neví", ne „prázdné" — u existujícího klienta se
+hodnota doplněná ve fakturaci nepřepíše. Klienti bez IČO, kterým uživatel části
+nedoplnil, dál posílají celý textový řádek jako `street`.

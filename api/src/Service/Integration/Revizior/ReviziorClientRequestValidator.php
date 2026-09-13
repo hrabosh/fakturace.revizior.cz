@@ -12,9 +12,14 @@ use Throwable;
  * Validace payloadu `PUT /organizations/{uuid}/clients/{uuid}` (kontrakt v1).
  *
  * Adresa: `street` je povinný, `city`/`postalCode`/`countryCode` smí být
- * `null`. ReviziOR zná adresu klienta jako jeden řádek a zbytek nedomýšlí;
- * `null` tu znamená „zdroj to neví", ne „prázdné" — synchronizátor takové
- * pole u existujícího klienta nepřepisuje.
+ * `null`. `null` tu znamená „zdroj to neví", ne „prázdné" — synchronizátor
+ * takové pole u existujícího klienta nepřepisuje.
+ *
+ * Od INV-003 má ReviziOR u klienta strukturovanou adresu a části posílá
+ * vyplněné, kdykoli je zná. Kde je nemá (klient bez IČO, který je uživatel
+ * nedoplnil), jde dál celý textový řádek jako `street` a zbytek je `null` —
+ * rozsekat řádek heuristikou se na žádné straně nesmí, chyba by skončila
+ * na daňovém dokladu.
  */
 final class ReviziorClientRequestValidator
 {
