@@ -247,6 +247,42 @@ Outbox jede každou minutu. Nedoručená událost se opakuje s backoffem, po
 vyčerpání pokusů skončí jako dead-letter a **nezmizí** — stav se čte
 `cron-revizior-outbox.php --status`.
 
+## Číselné řady v `cfg.php`
+
+Managed `cfg.php` je minimální — drží jen to, co se liší od výchozích hodnot.
+Blok `varsymbol` do něj ale **patří vždy**:
+
+```php
+'varsymbol' => [
+    'templates' => [
+        'invoice'     => '{YY}{MM}{CCC}',
+        'proforma'    => '9{YY}{MM}{CCC}',
+        'credit_note' => '7{YY}{MM}{CCC}',
+    ],
+],
+```
+
+Dodavatel založený přes ReviziOR má `invoice_number_format` NULL a to znamená
+„použij formát instalace" — ne „chybí" (viz `ReviziorOnboardingService`, který
+číselnou řadu záměrně nepočítá mezi povinné údaje onboardingu). Když instalace
+formát nemá, ReviziOR pustí uživatele fakturovat, protože dodavatel hlásí
+`completed`, a vystavení pak spadne na:
+
+```
+Chybí template pro invoice: nastav v Systém → Dodavatelé → Číslování faktur,
+nebo doplň cfg.varsymbol.templates.invoice.
+```
+
+Narazí na to **každá nově založená organizace při první faktuře**, ne jen ta
+první. Doplněno na produkci 2026-09-17.
+
+Ověření, že to instalace čte:
+
+```bash
+php -r '$c = require "/var/www/fakturace.revizior.cz/shared/cfg.php";
+        var_dump($c["varsymbol"]["templates"] ?? "CHYBI");'
+```
+
 ## Ověření po nasazení
 
 ```bash
